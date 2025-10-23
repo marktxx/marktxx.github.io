@@ -974,7 +974,7 @@
                     <button class="editor-btn" id="insertBtn">
                         <i class="fas fa-plus"></i>
                         <span>插入</span>
-                      </button>
+                    </button>
                     <button class="editor-btn" id="syncBtn">
                         <i class="fas fa-sync-alt"></i>
                         <span>同步</span>
@@ -1031,84 +1031,84 @@
             </div>
         </div>
     </div>
-<!-- 插入模态框 -->
-<div class="modal" id="insertModal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h3 class="modal-title">插入内容</h3>
-        <button class="modal-close">&times;</button>
-      </div>
-      <div class="modal-body">
-        <div class="tab-container">
-          <div class="tab active" data-tab="image">图片</div>
-          <div class="tab" data-tab="video">视频</div>
-          <div class="tab" data-tab="file">文件</div>
-          <div class="tab" data-tab="other">其他</div>
+    <!-- 插入模态框 -->
+    <div class="modal" id="insertModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">插入内容</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="tab-container">
+                    <div class="tab active" data-tab="image">图片</div>
+                    <div class="tab" data-tab="video">视频</div>
+                    <div class="tab" data-tab="file">文件</div>
+                    <div class="tab" data-tab="other">其他</div>
+                </div>
+
+                <div class="tab-content active" id="imageTab">
+                    <div class="form-group">
+                        <label class="form-label">图片URL</label>
+                        <input type="text" class="form-input" id="imageUrl" placeholder="输入图片URL">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">或上传图片</label>
+                        <input type="file" class="form-input" id="imageUpload" accept="image/*">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">替代文本</label>
+                        <input type="text" class="form-input" id="imageAlt" placeholder="图片描述">
+                    </div>
+                    <button class="editor-btn" id="insertImageBtn">插入图片</button>
+                </div>
+
+                <div class="tab-content" id="videoTab">
+                    <div class="form-group">
+                        <label class="form-label">视频URL</label>
+                        <input type="text" class="form-input" id="videoUrl" placeholder="输入视频URL">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">视频平台</label>
+                        <select class="form-select" id="videoPlatform">
+                            <option value="youtube">YouTube</option>
+                            <option value="vimeo">Vimeo</option>
+                            <option value="custom">自定义</option>
+                        </select>
+                    </div>
+                    <button class="editor-btn" id="insertVideoBtn">插入视频</button>
+                </div>
+
+                <div class="tab-content" id="fileTab">
+                    <div class="form-group">
+                        <label class="form-label">文件URL</label>
+                        <input type="text" class="form-input" id="fileUrl" placeholder="输入文件URL">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">或上传文件</label>
+                        <input type="file" class="form-input" id="fileUpload">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">链接文本</label>
+                        <input type="text" class="form-input" id="fileText" placeholder="链接显示文本">
+                    </div>
+                    <button class="editor-btn" id="insertFileBtn">插入文件链接</button>
+                </div>
+
+                <div class="tab-content" id="otherTab">
+                    <div class="form-group">
+                        <label class="form-label">插入内容类型</label>
+                        <select class="form-select" id="otherType">
+                            <option value="table">表格</option>
+                            <option value="code">代码块</option>
+                            <option value="quote">引用</option>
+                            <option value="divider">分隔线</option>
+                        </select>
+                    </div>
+                    <button class="editor-btn" id="insertOtherBtn">插入</button>
+                </div>
+            </div>
         </div>
-        
-        <div class="tab-content active" id="imageTab">
-          <div class="form-group">
-            <label class="form-label">图片URL</label>
-            <input type="text" class="form-input" id="imageUrl" placeholder="输入图片URL">
-          </div>
-          <div class="form-group">
-            <label class="form-label">或上传图片</label>
-            <input type="file" class="form-input" id="imageUpload" accept="image/*">
-          </div>
-          <div class="form-group">
-            <label class="form-label">替代文本</label>
-            <input type="text" class="form-input" id="imageAlt" placeholder="图片描述">
-          </div>
-          <button class="editor-btn" id="insertImageBtn">插入图片</button>
-        </div>
-        
-        <div class="tab-content" id="videoTab">
-          <div class="form-group">
-            <label class="form-label">视频URL</label>
-            <input type="text" class="form-input" id="videoUrl" placeholder="输入视频URL">
-          </div>
-          <div class="form-group">
-            <label class="form-label">视频平台</label>
-            <select class="form-select" id="videoPlatform">
-              <option value="youtube">YouTube</option>
-              <option value="vimeo">Vimeo</option>
-              <option value="custom">自定义</option>
-            </select>
-          </div>
-          <button class="editor-btn" id="insertVideoBtn">插入视频</button>
-        </div>
-        
-        <div class="tab-content" id="fileTab">
-          <div class="form-group">
-            <label class="form-label">文件URL</label>
-            <input type="text" class="form-input" id="fileUrl" placeholder="输入文件URL">
-          </div>
-          <div class="form-group">
-            <label class="form-label">或上传文件</label>
-            <input type="file" class="form-input" id="fileUpload">
-          </div>
-          <div class="form-group">
-            <label class="form-label">链接文本</label>
-            <input type="text" class="form-input" id="fileText" placeholder="链接显示文本">
-          </div>
-          <button class="editor-btn" id="insertFileBtn">插入文件链接</button>
-        </div>
-        
-        <div class="tab-content" id="otherTab">
-          <div class="form-group">
-            <label class="form-label">插入内容类型</label>
-            <select class="form-select" id="otherType">
-              <option value="table">表格</option>
-              <option value="code">代码块</option>
-              <option value="quote">引用</option>
-              <option value="divider">分隔线</option>
-            </select>
-          </div>
-          <button class="editor-btn" id="insertOtherBtn">插入</button>
-        </div>
-      </div>
     </div>
-  </div>
 
 
     <!-- 偏好设置模态框 -->
@@ -1208,6 +1208,9 @@
                             <option value="gitee">Gitee</option>
                             <option value="custom">自定义</option>
                         </select>
+                        <button class="editor-btn secondary" id="setDefaultImageHostBtn" style="margin-top: 10px;">
+                            <i class="fas fa-star"></i> 设为默认图床
+                        </button>
                     </div>
 
                     <div class="form-group" id="githubConfig">
@@ -1217,6 +1220,7 @@
                         <input type="text" class="form-input" placeholder="分支" value="main" id="githubBranch">
                         <input type="text" class="form-input" placeholder="目录路径" id="githubPath">
                         <input type="password" class="form-input" placeholder="访问令牌" id="githubToken">
+                        <input type="text" class="form-input" placeholder="自定义域名" id="githubDomain">
                     </div>
 
                     <div class="form-group" id="giteeConfig" style="display: none;">
@@ -1226,6 +1230,7 @@
                         <input type="text" class="form-input" placeholder="分支" value="master" id="giteeBranch">
                         <input type="text" class="form-input" placeholder="目录路径" id="giteePath">
                         <input type="password" class="form-input" placeholder="访问令牌" id="giteeToken">
+                        <input type="text" class="form-input" placeholder="自定义域名" id="giteeDomain">
                     </div>
 
                     <div class="form-group" id="customConfig" style="display: none;">
@@ -1233,6 +1238,7 @@
                         <input type="text" class="form-input" placeholder="API地址" id="customApiUrl">
                         <input type="text" class="form-input" placeholder="上传路径" id="customUploadPath">
                         <input type="password" class="form-input" placeholder="API密钥" id="customApiKey">
+                        <input type="text" class="form-input" placeholder="自定义域名" id="customDomain">
                     </div>
 
                     <div class="form-group">
@@ -1546,170 +1552,175 @@
                     }
                 }
             };
-// 显示插入模态框
-document.getElementById('insertBtn').addEventListener('click', function() {
-  document.getElementById('insertModal').style.display = 'flex';
-});
-// 处理本地图片上传
-document.getElementById('imageUpload').addEventListener('change', function(e) {
-  const file = e.target.files[0];
-  if (!file) return;
-  
-  // 创建预览
-  const reader = new FileReader();
-  reader.onload = function(event) {
-    const preview = document.createElement('img');
-    preview.src = event.target.result;
-    preview.style.maxWidth = '100%';
-    preview.style.maxHeight = '200px';
-    preview.style.marginTop = '10px';
-    
-    // 替换之前的预览
-    const existingPreview = document.querySelector('#imageTab img');
-    if (existingPreview) existingPreview.remove();
-    
-    this.parentNode.appendChild(preview);
-  };
-  reader.readAsDataURL(file);
-});
+            // 图床配置数据结构
+            const imageHostConfig = {
+                defaultService: 'github',
+                services: {
+                    github: {
+                        username: '',
+                        repo: '',
+                        branch: 'main',
+                        path: '',
+                        token: '',
+                        customDomain: '',
+                        enabled: true
+                    },
+                    gitee: {
+                        username: '',
+                        repo: '',
+                        branch: 'master',
+                        path: '',
+                        token: '',
+                        customDomain: ' ',
+                        enabled: true
+                    },
+                    custom: {
+                        apiUrl: '',
+                        uploadPath: '',
+                        apiKey: '',
+                        customDomain: '',
+                        enabled: false
+                    }
+                }
+            };
 
-// 修改插入图片功能
-document.getElementById('insertImageBtn').addEventListener('click', function() {
-  const fileInput = document.getElementById('imageUpload');
-  const urlInput = document.getElementById('imageUrl');
-  const alt = document.getElementById('imageAlt').value || '图片';
-  
-  if (fileInput.files.length > 0) {
-    // 处理本地图片上传
-    const file = fileInput.files[0];
-    uploadImageToImageHost(file, alt);
-  } else if (urlInput.value) {
-    // 处理URL图片
-    const markdown = `![${alt}](${urlInput.value})`;
-    insertAtCursor(markdown);
-    document.getElementById('insertModal').style.display = 'none';
-  } else {
-    alert('请选择图片或输入图片URL');
-  }
-});
 
-// 上传图片到图床
-function uploadImageToImageHost(file, alt) {
-  // 显示上传状态
-  const status = document.createElement('div');
-  status.textContent = '上传中...';
-  status.style.marginTop = '10px';
-  document.getElementById('imageTab').appendChild(status);
-  
-  // 模拟上传过程
-  setTimeout(() => {
-    status.textContent = '上传成功!';
-    
-    // 获取图床配置
-    const imageHostConfig = JSON.parse(localStorage.getItem('imageHostConfig') || '{}');
-    const customDomain = imageHostConfig.customDomain || '';
-    
-    // 生成图片URL
-    const timestamp = new Date().getTime();
-    const fileName = file.name.replace(/\.[^/.]+$/, ""); // 移除扩展名
-    const imageUrl = `${customDomain}/uploads/${fileName}_${timestamp}.${file.name.split('.').pop()}`;
-    
-    // 插入Markdown
-    const markdown = `![${alt}](${imageUrl})`;
-    insertAtCursor(markdown);
-    
-    // 关闭模态框
-    setTimeout(() => {
-      document.getElementById('insertModal').style.display = 'none';
-    }, 1000);
-  }, 1500);
-}
 
-// 插入视频功能
-document.getElementById('insertVideoBtn').addEventListener('click', function() {
-  const url = document.getElementById('videoUrl').value;
-  const platform = document.getElementById('videoPlatform').value;
-  
-  if (url) {
-    let markdown = '';
-    if (platform === 'youtube') {
-      // 提取YouTube视频ID
-      const videoId = url.match(/[?&]v=([^&]+)/)?.[1] || url.split('/').pop();
-      markdown = `<iframe width="560" height="315" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe>`;
-    } else if (platform === 'vimeo') {
-      const videoId = url.split('/').pop();
-      markdown = `<iframe src="https://player.vimeo.com/video/${videoId}" width="640" height="360" frameborder="0" allowfullscreen></iframe>`;
-    } else {
-      markdown = `<video src="${url}" controls></video>`;
-    }
-    
-    insertAtCursor(markdown);
-    document.getElementById('insertModal').style.display = 'none';
-  } else {
-    alert('请输入视频URL');
-  }
-});
+            initImageHostConfig();
+            // 显示插入模态框
+            document.getElementById('insertBtn').addEventListener('click', function () {
+                document.getElementById('insertModal').style.display = 'flex';
+            });
+            // 处理本地图片上传
+            document.getElementById('imageUpload').addEventListener('change', function (e) {
+                const file = e.target.files[0];
+                if (!file) return;
 
-// 插入文件功能
-document.getElementById('insertFileBtn').addEventListener('click', function() {
-  const url = document.getElementById('fileUrl').value;
-  const text = document.getElementById('fileText').value || '下载文件';
-  
-  if (url) {
-    const markdown = `[${text}](${url})`;
-    insertAtCursor(markdown);
-    document.getElementById('insertModal').style.display = 'none';
-  } else {
-    alert('请输入文件URL');
-  }
-});
+                // 创建预览
+                const reader = new FileReader();
+                reader.onload = function (event) {
+                    const preview = document.createElement('img');
+                    preview.src = event.target.result;
+                    preview.style.maxWidth = '100%';
+                    preview.style.maxHeight = '200px';
+                    preview.style.marginTop = '10px';
 
-<!-- 插入其他内容 -->
-document.getElementById('insertOtherBtn').addEventListener('click', function() {
-  const type = document.getElementById('otherType').value;
-  let content = '';
-  
-  switch (type) {
-    case 'table':
-      content = `| 标题1 | 标题2 | 标题3 |
+                    // 替换之前的预览
+                    const existingPreview = document.querySelector('#imageTab img');
+                    if (existingPreview) existingPreview.remove();
+
+                    this.parentNode.appendChild(preview);
+                };
+                reader.readAsDataURL(file);
+            });
+
+            // 修改插入图片功能
+            document.getElementById('insertImageBtn').addEventListener('click', function () {
+                const fileInput = document.getElementById('imageUpload');
+                const urlInput = document.getElementById('imageUrl');
+                const alt = document.getElementById('imageAlt').value || '图片';
+
+                if (fileInput.files.length > 0) {
+                    // 处理本地图片上传
+                    const file = fileInput.files[0];
+                    uploadImageToImageHost(file, alt);
+                } else if (urlInput.value) {
+                    // 处理URL图片
+                    const markdown = `![${alt}](${urlInput.value})`;
+                    insertAtCursor(markdown);
+                    document.getElementById('insertModal').style.display = 'none';
+                } else {
+                    alert('请选择图片或输入图片URL');
+                }
+            });
+
+
+
+            // 插入视频功能
+            document.getElementById('insertVideoBtn').addEventListener('click', function () {
+                const url = document.getElementById('videoUrl').value;
+                const platform = document.getElementById('videoPlatform').value;
+
+                if (url) {
+                    let markdown = '';
+                    if (platform === 'youtube') {
+                        // 提取YouTube视频ID
+                        const videoId = url.match(/[?&]v=([^&]+)/)?.[1] || url.split('/').pop();
+                        markdown = `<iframe width="560" height="315" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe>`;
+                    } else if (platform === 'vimeo') {
+                        const videoId = url.split('/').pop();
+                        markdown = `<iframe src="https://player.vimeo.com/video/${videoId}" width="640" height="360" frameborder="0" allowfullscreen></iframe>`;
+                    } else {
+                        markdown = `<video src="${url}" controls></video>`;
+                    }
+
+                    insertAtCursor(markdown);
+                    document.getElementById('insertModal').style.display = 'none';
+                } else {
+                    alert('请输入视频URL');
+                }
+            });
+
+            // 插入文件功能
+            document.getElementById('insertFileBtn').addEventListener('click', function () {
+                const url = document.getElementById('fileUrl').value;
+                const text = document.getElementById('fileText').value || '下载文件';
+
+                if (url) {
+                    const markdown = `[${text}](${url})`;
+                    insertAtCursor(markdown);
+                    document.getElementById('insertModal').style.display = 'none';
+                } else {
+                    alert('请输入文件URL');
+                }
+            });
+
+            <!-- 插入其他内容 -->
+            document.getElementById('insertOtherBtn').addEventListener('click', function () {
+                const type = document.getElementById('otherType').value;
+                let content = '';
+
+                switch (type) {
+                    case 'table':
+                        content = `| 标题1 | 标题2 | 标题3 |
 |------|------|------|
 | 内容1 | 内容2 | 内容3 |
 | 内容4 | 内容5 | 内容6 |`;
-      break;
-    case 'code':
-      content = "```语言\n// 在这里输入代码\n```";
-      break;
-    case 'quote':
-      content = "> 引用内容";
-      break;
-    case 'divider':
-      content = "---";
-      break;
-  }
-  
-  if (content) {
-    insertAtCursor(content);
-    document.getElementById('insertModal').style.display = 'none';
-  }
-});
+                        break;
+                    case 'code':
+                        content = "```语言\n// 在这里输入代码\n```";
+                        break;
+                    case 'quote':
+                        content = "> 引用内容";
+                        break;
+                    case 'divider':
+                        content = "---";
+                        break;
+                }
 
-// 在光标位置插入内容
-function insertAtCursor(text) {
-  const editor = document.getElementById('editor');
-  const start = editor.selectionStart;
-  const end = editor.selectionEnd;
-  const before = editor.value.substring(0, start);
-  const after = editor.value.substring(end);
-  
-  editor.value = before + text + after;
-  editor.selectionStart = start + text.length;
-  editor.selectionEnd = start + text.length;
-  editor.focus();
-  
-  // 触发输入事件以更新预览
-  const event = new Event('input', { bubbles: true });
-  editor.dispatchEvent(event);
-}
+                if (content) {
+                    insertAtCursor(content);
+                    document.getElementById('insertModal').style.display = 'none';
+                }
+            });
+
+            // 在光标位置插入内容
+            function insertAtCursor(text) {
+                const editor = document.getElementById('editor');
+                const start = editor.selectionStart;
+                const end = editor.selectionEnd;
+                const before = editor.value.substring(0, start);
+                const after = editor.value.substring(end);
+
+                editor.value = before + text + after;
+                editor.selectionStart = start + text.length;
+                editor.selectionEnd = start + text.length;
+                editor.focus();
+
+                // 触发输入事件以更新预览
+                const event = new Event('input', { bubbles: true });
+                editor.dispatchEvent(event);
+            }
 
 
 
@@ -2542,6 +2553,7 @@ function helloWorld() {
 
                 applyConfig();
                 saveConfig();
+                saveImageHostConfig()
                 prefModal.style.display = 'none';
             });
 
@@ -2925,7 +2937,265 @@ function helloWorld() {
                     event.target.style.display = 'none';
                 }
             });
+
+
+
+            // 初始化配置
+            function initImageHostConfig() {
+                const savedConfig = localStorage.getItem('imageHostConfig');
+                if (savedConfig) {
+                    Object.assign(imageHostConfig, JSON.parse(savedConfig));
+                }
+                renderImageHostConfig();
+            }
+
+            // 渲染图床配置到界面
+            function renderImageHostConfig() {
+                // 设置默认服务
+                document.getElementById('imageHostService').value = imageHostConfig.defaultService;
+
+                // 渲染各个服务的配置
+                Object.keys(imageHostConfig.services).forEach(service => {
+                    const config = imageHostConfig.services[service];
+                    if (service === 'github') {
+                        document.getElementById('githubUsername').value = config.username;
+                        document.getElementById('githubRepo').value = config.repo;
+                        document.getElementById('githubBranch').value = config.branch;
+                        document.getElementById('githubPath').value = config.path;
+                        document.getElementById('githubToken').value = config.token;
+                        document.getElementById('githubDomain').value = config.customDomain;
+                    } else if (service === 'gitee') {
+                        document.getElementById('giteeUsername').value = config.username;
+                        document.getElementById('giteeRepo').value = config.repo;
+                        document.getElementById('giteeBranch').value = config.branch;
+                        document.getElementById('giteePath').value = config.path;
+                        document.getElementById('giteeToken').value = config.token;
+                        document.getElementById('giteeDomain').value = config.customDomain;
+                    } else if (service === 'custom') {
+                        document.getElementById('customApiUrl').value = config.apiUrl;
+                        document.getElementById('customUploadPath').value = config.uploadPath;
+                        document.getElementById('customApiKey').value = config.apiKey;
+                        document.getElementById('customDomain').value = config.customDomain;
+                    }
+                });
+
+                // 更新服务选择显示
+                updateServiceDisplay();
+            }
+
+            // 保存图床配置
+            function saveImageHostConfig() {
+                imageHostConfig.defaultService = document.getElementById('imageHostService').value;
+
+                // 保存各个服务的配置
+                imageHostConfig.services.github = {
+                    username: document.getElementById('githubUsername').value,
+                    repo: document.getElementById('githubRepo').value,
+                    branch: document.getElementById('githubBranch').value,
+                    path: document.getElementById('githubPath').value,
+                    token: document.getElementById('githubToken').value,
+                    customDomain: document.getElementById('githubDomain').value,
+                    enabled: true
+                };
+
+                imageHostConfig.services.gitee = {
+                    username: document.getElementById('giteeUsername').value,
+                    repo: document.getElementById('giteeRepo').value,
+                    branch: document.getElementById('giteeBranch').value,
+                    path: document.getElementById('giteePath').value,
+                    token: document.getElementById('giteeToken').value,
+                    customDomain: document.getElementById('giteeDomain').value,
+                    enabled: true
+                };
+
+                imageHostConfig.services.custom = {
+                    apiUrl: document.getElementById('customApiUrl').value,
+                    uploadPath: document.getElementById('customUploadPath').value,
+                    apiKey: document.getElementById('customApiKey').value,
+                    customDomain: document.getElementById('customDomain').value,
+                    enabled: document.getElementById('customApiUrl').value !== ''
+                };
+
+                localStorage.setItem('imageHostConfig', JSON.stringify(imageHostConfig));
+                return imageHostConfig;
+            }
+
+            // 上传图片到图床
+            async function uploadImageToImageHost(file, alt) {
+                const status = document.createElement('div');
+                status.textContent = '上传中...';
+                document.getElementById('imageTab').appendChild(status);
+
+                try {
+                    const config = imageHostConfig.services[imageHostConfig.defaultService];
+
+                    if (!config.enabled) {
+                        throw new Error('当前图床服务未启用');
+                    }
+
+                    // 生成文件名
+                    const timestamp = new Date().getTime();
+                    const fileName = file.name.replace(/\.[^/.]+$/, "");
+                    const fileExtension = file.name.split('.').pop();
+                    const finalFileName = `${fileName}_${timestamp}.${fileExtension}`;
+
+                    let imageUrl = '';
+
+                    // 根据服务类型选择上传方式
+                    if (imageHostConfig.defaultService === 'github') {
+                        imageUrl = await uploadToGitHub(file, finalFileName, config);
+                    } else if (imageHostConfig.defaultService === 'gitee') {
+                        imageUrl = await uploadToGitee(file, finalFileName, config);
+                    } else if (imageHostConfig.defaultService === 'custom') {
+                        imageUrl = await uploadToCustom(file, finalFileName, config);
+                    }
+
+                    status.textContent = '上传成功!';
+                    status.style.color = 'green';
+
+                    // 插入Markdown
+                    const markdown = `![${alt}](${imageUrl})`;
+                    insertAtCursor(markdown);
+
+                    // 关闭模态框
+                    setTimeout(() => {
+                        document.getElementById('insertModal').style.display = 'none';
+                    }, 1000);
+
+                } catch (error) {
+                    status.textContent = `上传失败: ${error.message}`;
+                    status.style.color = 'red';
+                }
+            }
+
+            // 上传到GitHub
+            async function uploadToGitHub(file, fileName, config) {
+                const baseUrl = config.customDomain || 'https://api.github.com';
+                const apiUrl = `${baseUrl}/repos/${config.username}/${config.repo}/contents/${config.path}/${fileName}`;
+
+                // 读取文件内容并转换为base64
+                const fileContent = await readFileAsBase64(file);
+
+                const response = await fetch(apiUrl, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `token ${config.token}`,
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        message: `Upload image: ${fileName}`,
+                        content: fileContent.split(',')[1], // 移除data:image/...前缀
+                        branch: config.branch
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`GitHub API错误: ${response.status}`);
+                }
+
+                const result = await response.json();
+                return result.content.download_url;
+            }
+
+            // 上传到Gitee
+            async function uploadToGitee(file, fileName, config) {
+                const baseUrl = config.customDomain || 'https://gitee.com/api/v5';
+                const apiUrl = `${baseUrl}/repos/${config.username}/${config.repo}/contents/${config.path}/${fileName}`;
+
+                const fileContent = await readFileAsBase64(file);
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        access_token: config.token,
+                        content: fileContent.split(',')[1],
+                        message: `Upload image: ${fileName}`,
+                        branch: config.branch
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Gitee API错误: ${response.status}`);
+                }
+
+                const result = await response.json();
+                return result.content.download_url;
+            }
+
+            // 上传到自定义图床
+            async function uploadToCustom(file, fileName, config) {
+                const formData = new FormData();
+                formData.append('file', file);
+                formData.append('fileName', fileName);
+
+                if (config.apiKey) {
+                    formData.append('apiKey', config.apiKey);
+                }
+
+                const response = await fetch(config.apiUrl, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error(`自定义图床错误: ${response.status}`);
+                }
+
+                const result = await response.json();
+                return result.url || result.data.url;
+            }
+
+            // 将文件读取为Base64
+            function readFileAsBase64(file) {
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = () => resolve(reader.result);
+                    reader.onerror = reject;
+                    reader.readAsDataURL(file);
+                });
+            }
+
+            // 设置默认图床
+            function setDefaultImageHost(service) {
+                imageHostConfig.defaultService = service;
+                localStorage.setItem('imageHostConfig', JSON.stringify(imageHostConfig));
+                updateServiceDisplay();
+            }
+
+            // 更新服务选择显示
+            function updateServiceDisplay() {
+                const serviceSelect = document.getElementById('imageHostService');
+                serviceSelect.value = imageHostConfig.defaultService;
+
+                // 显示当前默认服务
+                const defaultIndicator = document.getElementById('defaultIndicator') ||
+                    document.createElement('span');
+                defaultIndicator.id = 'defaultIndicator';
+                defaultIndicator.textContent = '（默认）';
+                defaultIndicator.style.color = 'green';
+                defaultIndicator.style.marginLeft = '5px';
+
+                // 移除之前的指示器
+                document.querySelectorAll('#defaultIndicator').forEach(el => el.remove());
+
+                // 在当前选中的服务后添加指示器
+                const selectedOption = serviceSelect.options[serviceSelect.selectedIndex];
+                selectedOption.textContent += '（默认）';
+            }
+
+
+            // 添加设置默认图床按钮事件
+            document.getElementById('setDefaultImageHostBtn').addEventListener('click', function () {
+                const service = document.getElementById('imageHostService').value;
+                setDefaultImageHost(service);
+                alert(`已将${service}设置为默认图床`);
+            });
         });
+
+
     </script>
 </body>
 
