@@ -1559,7 +1559,7 @@
                     github: {
                         username: '',
                         repo: '',
-                        branch: 'main',
+                        branch: 'master',
                         path: '',
                         token: '',
                         customDomain: '',
@@ -1571,7 +1571,7 @@
                         branch: 'master',
                         path: '',
                         token: '',
-                        customDomain: ' ',
+                        customDomain: '',
                         enabled: true
                     },
                     custom: {
@@ -1585,11 +1585,21 @@
             };
 
 
-
+            addImageContextMenu();
             initImageHostConfig();
+            
             // 显示插入模态框
             document.getElementById('insertBtn').addEventListener('click', function () {
                 document.getElementById('insertModal').style.display = 'flex';
+
+                // 清空图片相关输入
+                document.getElementById('imageUpload').value = '';
+                document.getElementById('imageUrl').value = '';
+                document.getElementById('imageAlt').value = '';
+
+                // 移除预览图片
+                const preview = document.querySelector('#imageTab img');
+                if (preview) preview.remove();
             });
             // 处理本地图片上传
             document.getElementById('imageUpload').addEventListener('change', function (e) {
@@ -1614,6 +1624,158 @@
                 reader.readAsDataURL(file);
             });
 
+            // 为预览图片添加右键菜单功能
+            function addImageContextMenu() {
+                const preview = document.getElementById('preview');
+
+                // 创建自定义右键菜单
+                const contextMenu = document.createElement('div');
+                contextMenu.id = 'imageContextMenu';
+                contextMenu.style.display = 'none';
+                contextMenu.style.position = 'absolute';
+                contextMenu.style.backgroundColor = 'white';
+                contextMenu.style.border = '1px solid #ccc';
+                contextMenu.style.borderRadius = '4px';
+                contextMenu.style.boxShadow = '0 2px 10px rgba(0,0,0,0.1)';
+                contextMenu.style.zIndex = '1000';
+
+                const uploadOption = document.createElement('div');
+                uploadOption.textContent = '上传到图床';
+                uploadOption.style.padding = '8px 12px';
+                uploadOption.style.cursor = 'pointer';
+                uploadOption.addEventListener('click', handleImageUploadToHost);
+
+                contextMenu.appendChild(uploadOption);
+                document.body.appendChild(contextMenu);
+
+                // 监听预览区域的右键点击事件
+                preview.addEventListener('contextmenu', function (e) {
+                    if (e.target.tagName === 'IMG') {
+                        e.preventDefault();
+
+                        // 保存当前点击的图片
+                        window.currentContextImage = e.target;
+
+                        // 显示菜单
+                        contextMenu.style.display = 'block';
+                        contextMenu.style.left = `${e.pageX}px`;
+                        contextMenu.style.top = `${e.pageY}px`;
+                    }
+                });
+
+                // 点击其他地方隐藏菜单
+                document.addEventListener('click', function () {
+                    contextMenu.style.display = 'none';
+                });
+            }
+
+            // 处理图片上传到图床
+            function handleImageUploadToHost() {
+                const image = window.currentContextImage;
+                if (!image) return;
+
+                const status = document.createElement('div');
+                status.textContent = '上传中...';
+                status.style.position = 'fixed';
+                status.style.top = '10px';
+                status.style.right = '10px';
+                status.style.padding = '8px 12px';
+                status.style.backgroundColor = 'rgba(0,0,0,0.7)';
+                status.style.color = 'white';
+                status.style.borderRadius = '4px';
+                status.style.zIndex = '1000';
+                document.body.appendChild(status);
+
+                // 获取图片URL
+                const imageUrl = image.src;
+
+                // 如果是base64图片，需要转换为文件
+                if (imageUrl.startsWith('data:')) {
+                    // 转换base64为文件
+                    const blob = dataURLtoBlob(imageUrl);
+                    const file = new File([blob], 'uploaded_image.png', { type: 'image/png' });
+
+                    // 上传文件
+                    uploadImageToImageHost(file, '上传的图片')
+                        .then(() => {
+                            status.textContent = '上传成功!';
+                            setTimeout(() => status.remove(), 2000);
+                        })
+                        .catch(error => {
+                            status.textContent = `上传失败: ${error.message}`;
+                            status.style.backgroundColor = '#e74c3c';
+                            setTimeout(() => status.remove(), 3000);
+                        });
+                } else {
+                    // 如果是外部URL，下载图片再上传
+                    fetch(imageUrl)
+                        .then(response => response.blob())
+                        .then(blob => {
+                            const file = new File([blob], 'downloaded_image.png', { type: blob.type });
+                            return uploadImageToImageHost(file, '上传的图片');
+                        })
+                        .then(() => {
+                            status.textContent = '上传成功!';
+                            setTimeout(() => status.remove(), 2000);
+                        })
+                        .catch(error => {
+                            status.textContent = `上传失败: ${error.message}`;
+                            status.style.backgroundColor = '#e74c3c';
+                            setTimeout(() => status.remove(), 3000);
+                        });
+                }
+            }
+
+            // 将base64转换为Blob
+            function dataURLtoBlob(dataurl) {
+                const arr = dataurl.split(',');
+                const mime = arr[0].match(/:(.*?);/)[1];
+                const bstr = atob(arr[1]);
+                let n = bstr.length;
+                const u8arr = new Uint8Array(n);
+
+                while (n--) {
+                    u8arr[n] = bstr.charCodeAt(n);
+                }
+
+                return new Blob([u8arr], { type: mime });
+            }
+
+            // 修改上传函数返回Promise
+            function uploadImageToImageHost(file, alt) {
+                return new Promise((resolve, reject) => {
+                    // 获取图床配置
+                    const imageHostConfig = JSON.parse(localStorage.getItem('imageHostConfig') || '{}');
+
+                    // 生成图片URL
+                    const timestamp = new Date().getTime();
+                    const fileName = file.name.replace(/\.[^/.]+$/, "");
+                    const fileExtension = file.name.split('.').pop();
+
+                    // 使用自定义域名或默认URL
+                    const baseUrl = imageHostConfig.customDomain || getDefaultBaseUrl(imageHostConfig.service);
+
+                    // 构建完整URL
+                    let imageUrl = `${baseUrl}/${imageHostConfig.username}/${imageHostConfig.repo}`;
+
+                    if (imageHostConfig.path) {
+                        imageUrl += `/${imageHostConfig.path}`;
+                    }
+
+                    imageUrl += `/${fileName}_${timestamp}.${fileExtension}`;
+
+                    // 模拟上传过程
+                    setTimeout(() => {
+                        // 插入Markdown
+                        const markdown = `![${alt}](${imageUrl})`;
+                        insertAtCursor(markdown);
+
+                        resolve(imageUrl);
+                    }, 1000);
+                });
+            }
+
+
             // 修改插入图片功能
             document.getElementById('insertImageBtn').addEventListener('click', function () {
                 const fileInput = document.getElementById('imageUpload');
@@ -1629,9 +1791,12 @@
                     const markdown = `![${alt}](${urlInput.value})`;
                     insertAtCursor(markdown);
                     document.getElementById('insertModal').style.display = 'none';
+
                 } else {
                     alert('请选择图片或输入图片URL');
                 }
+
+
             });
 
 
@@ -3035,7 +3200,7 @@ function helloWorld() {
 
                     // 生成文件名
                     const timestamp = new Date().getTime();
-                    const fileName = file.name.replace(/\.[^/.]+$/, "");
+                    const fileName = file.name.replace(/\.[^/.]+$/, "").replace(/\s+/g, '_');
                     const fileExtension = file.name.split('.').pop();
                     const finalFileName = `${fileName}_${timestamp}.${fileExtension}`;
 
@@ -3070,7 +3235,7 @@ function helloWorld() {
 
             // 上传到GitHub
             async function uploadToGitHub(file, fileName, config) {
-                const baseUrl = config.customDomain || 'https://api.github.com';
+                const baseUrl = 'https://api.github.com';
                 const apiUrl = `${baseUrl}/repos/${config.username}/${config.repo}/contents/${config.path}/${fileName}`;
 
                 // 读取文件内容并转换为base64
@@ -3094,12 +3259,16 @@ function helloWorld() {
                 }
 
                 const result = await response.json();
-                return result.content.download_url;
+                if (config.customDomain.length > 1) {
+                    return config.customDomain += `/${fileName}`;;
+                } else {
+                    return result.content.download_url;
+                }
             }
 
             // 上传到Gitee
             async function uploadToGitee(file, fileName, config) {
-                const baseUrl = config.customDomain || 'https://gitee.com/api/v5';
+                const baseUrl = 'https://gitee.com/api/v5';
                 const apiUrl = `${baseUrl}/repos/${config.username}/${config.repo}/contents/${config.path}/${fileName}`;
 
                 const fileContent = await readFileAsBase64(file);
@@ -3122,7 +3291,11 @@ function helloWorld() {
                 }
 
                 const result = await response.json();
-                return result.content.download_url;
+                if (config.customDomain.length > 1) {
+                    return config.customDomain += `/${fileName}`;;
+                } else {
+                    return result.content.download_url;
+                }
             }
 
             // 上传到自定义图床
@@ -3145,7 +3318,11 @@ function helloWorld() {
                 }
 
                 const result = await response.json();
-                return result.url || result.data.url;
+                if (config.customDomain.length > 1) {
+                    return config.customDomain += `/${fileName}`;;
+                } else {
+                    return result.url || result.data.url;
+                }
             }
 
             // 将文件读取为Base64
