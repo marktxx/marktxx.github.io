@@ -971,6 +971,10 @@
             <div class="editor-header">
                 <div class="editor-title" id="editorTitle">未命名.md</div>
                 <div class="editor-actions">
+                    <button class="editor-btn" id="insertBtn">
+                        <i class="fas fa-plus"></i>
+                        <span>插入</span>
+                      </button>
                     <button class="editor-btn" id="syncBtn">
                         <i class="fas fa-sync-alt"></i>
                         <span>同步</span>
@@ -1027,6 +1031,85 @@
             </div>
         </div>
     </div>
+<!-- 插入模态框 -->
+<div class="modal" id="insertModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">插入内容</h3>
+        <button class="modal-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="tab-container">
+          <div class="tab active" data-tab="image">图片</div>
+          <div class="tab" data-tab="video">视频</div>
+          <div class="tab" data-tab="file">文件</div>
+          <div class="tab" data-tab="other">其他</div>
+        </div>
+        
+        <div class="tab-content active" id="imageTab">
+          <div class="form-group">
+            <label class="form-label">图片URL</label>
+            <input type="text" class="form-input" id="imageUrl" placeholder="输入图片URL">
+          </div>
+          <div class="form-group">
+            <label class="form-label">或上传图片</label>
+            <input type="file" class="form-input" id="imageUpload" accept="image/*">
+          </div>
+          <div class="form-group">
+            <label class="form-label">替代文本</label>
+            <input type="text" class="form-input" id="imageAlt" placeholder="图片描述">
+          </div>
+          <button class="editor-btn" id="insertImageBtn">插入图片</button>
+        </div>
+        
+        <div class="tab-content" id="videoTab">
+          <div class="form-group">
+            <label class="form-label">视频URL</label>
+            <input type="text" class="form-input" id="videoUrl" placeholder="输入视频URL">
+          </div>
+          <div class="form-group">
+            <label class="form-label">视频平台</label>
+            <select class="form-select" id="videoPlatform">
+              <option value="youtube">YouTube</option>
+              <option value="vimeo">Vimeo</option>
+              <option value="custom">自定义</option>
+            </select>
+          </div>
+          <button class="editor-btn" id="insertVideoBtn">插入视频</button>
+        </div>
+        
+        <div class="tab-content" id="fileTab">
+          <div class="form-group">
+            <label class="form-label">文件URL</label>
+            <input type="text" class="form-input" id="fileUrl" placeholder="输入文件URL">
+          </div>
+          <div class="form-group">
+            <label class="form-label">或上传文件</label>
+            <input type="file" class="form-input" id="fileUpload">
+          </div>
+          <div class="form-group">
+            <label class="form-label">链接文本</label>
+            <input type="text" class="form-input" id="fileText" placeholder="链接显示文本">
+          </div>
+          <button class="editor-btn" id="insertFileBtn">插入文件链接</button>
+        </div>
+        
+        <div class="tab-content" id="otherTab">
+          <div class="form-group">
+            <label class="form-label">插入内容类型</label>
+            <select class="form-select" id="otherType">
+              <option value="table">表格</option>
+              <option value="code">代码块</option>
+              <option value="quote">引用</option>
+              <option value="divider">分隔线</option>
+            </select>
+          </div>
+          <button class="editor-btn" id="insertOtherBtn">插入</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
 
     <!-- 偏好设置模态框 -->
     <div class="modal" id="prefModal">
@@ -1039,7 +1122,9 @@
                 <div class="tab-container">
                     <div class="tab active" data-tab="theme">主题</div>
                     <div class="tab" data-tab="editor">编辑器</div>
-                    <div class="tab" data-tab="importExport">导入/导出</div>
+                    <div class="tab" data-tab="importExport">配置导入/导出</div>
+                    <div class="tab" data-tab="template">模板设置</div>
+                    <div class="tab" data-tab="imageHost">图床</div>
                 </div>
 
                 <div class="tab-content active" id="themeTab">
@@ -1093,12 +1178,68 @@
                         <label class="form-label">导出配置</label>
                         <button class="editor-btn secondary" id="exportConfigBtn">导出配置</button>
                     </div>
+
+                </div>
+
+                <div class="tab-content" id="templateTab">
                     <div class="form-group">
-                        <label class="form-label">数据备份</label>
-                        <button class="editor-btn secondary" id="backupDataBtn">备份所有数据</button>
-                        <button class="editor-btn secondary" id="restoreDataBtn">恢复数据</button>
+                        <label class="form-label">模板管理</label>
+                        <div id="templateList">
+                            <!-- 模板列表将通过JS动态生成 -->
+                        </div>
+                        <button class="editor-btn secondary" id="addTemplateBtn">
+                            <i class="fas fa-plus"></i> 添加模板
+                        </button>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">模板内容</label>
+                        <textarea class="form-textarea" id="templateContent" placeholder="输入模板内容..."></textarea>
+                        <p class="form-hint">支持变量：{{date}} - 当前日期, {{time}} - 当前时间</p>
                     </div>
                 </div>
+
+                <!-- 图床设置内容 -->
+                <div class="tab-content" id="imageHostTab">
+                    <div class="form-group">
+                        <label class="form-label">选择图床服务</label>
+                        <select class="form-select" id="imageHostService">
+                            <option value="github">GitHub</option>
+                            <option value="gitee">Gitee</option>
+                            <option value="custom">自定义</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group" id="githubConfig">
+                        <label class="form-label">GitHub配置</label>
+                        <input type="text" class="form-input" placeholder="用户名" id="githubUsername">
+                        <input type="text" class="form-input" placeholder="仓库名" id="githubRepo">
+                        <input type="text" class="form-input" placeholder="分支" value="main" id="githubBranch">
+                        <input type="text" class="form-input" placeholder="目录路径" id="githubPath">
+                        <input type="password" class="form-input" placeholder="访问令牌" id="githubToken">
+                    </div>
+
+                    <div class="form-group" id="giteeConfig" style="display: none;">
+                        <label class="form-label">Gitee配置</label>
+                        <input type="text" class="form-input" placeholder="用户名" id="giteeUsername">
+                        <input type="text" class="form-input" placeholder="仓库名" id="giteeRepo">
+                        <input type="text" class="form-input" placeholder="分支" value="master" id="giteeBranch">
+                        <input type="text" class="form-input" placeholder="目录路径" id="giteePath">
+                        <input type="password" class="form-input" placeholder="访问令牌" id="giteeToken">
+                    </div>
+
+                    <div class="form-group" id="customConfig" style="display: none;">
+                        <label class="form-label">自定义图床配置</label>
+                        <input type="text" class="form-input" placeholder="API地址" id="customApiUrl">
+                        <input type="text" class="form-input" placeholder="上传路径" id="customUploadPath">
+                        <input type="password" class="form-input" placeholder="API密钥" id="customApiKey">
+                    </div>
+
+                    <div class="form-group">
+                        <button class="editor-btn" id="testImageHostBtn">测试连接</button>
+                    </div>
+                </div>
+
             </div>
             <div class="modal-footer">
                 <button class="editor-btn secondary" id="cancelPref">取消</button>
@@ -1405,7 +1546,329 @@
                     }
                 }
             };
+// 显示插入模态框
+document.getElementById('insertBtn').addEventListener('click', function() {
+  document.getElementById('insertModal').style.display = 'flex';
+});
+// 处理本地图片上传
+document.getElementById('imageUpload').addEventListener('change', function(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  
+  // 创建预览
+  const reader = new FileReader();
+  reader.onload = function(event) {
+    const preview = document.createElement('img');
+    preview.src = event.target.result;
+    preview.style.maxWidth = '100%';
+    preview.style.maxHeight = '200px';
+    preview.style.marginTop = '10px';
+    
+    // 替换之前的预览
+    const existingPreview = document.querySelector('#imageTab img');
+    if (existingPreview) existingPreview.remove();
+    
+    this.parentNode.appendChild(preview);
+  };
+  reader.readAsDataURL(file);
+});
 
+// 修改插入图片功能
+document.getElementById('insertImageBtn').addEventListener('click', function() {
+  const fileInput = document.getElementById('imageUpload');
+  const urlInput = document.getElementById('imageUrl');
+  const alt = document.getElementById('imageAlt').value || '图片';
+  
+  if (fileInput.files.length > 0) {
+    // 处理本地图片上传
+    const file = fileInput.files[0];
+    uploadImageToImageHost(file, alt);
+  } else if (urlInput.value) {
+    // 处理URL图片
+    const markdown = `![${alt}](${urlInput.value})`;
+    insertAtCursor(markdown);
+    document.getElementById('insertModal').style.display = 'none';
+  } else {
+    alert('请选择图片或输入图片URL');
+  }
+});
+
+// 上传图片到图床
+function uploadImageToImageHost(file, alt) {
+  // 显示上传状态
+  const status = document.createElement('div');
+  status.textContent = '上传中...';
+  status.style.marginTop = '10px';
+  document.getElementById('imageTab').appendChild(status);
+  
+  // 模拟上传过程
+  setTimeout(() => {
+    status.textContent = '上传成功!';
+    
+    // 获取图床配置
+    const imageHostConfig = JSON.parse(localStorage.getItem('imageHostConfig') || '{}');
+    const customDomain = imageHostConfig.customDomain || '';
+    
+    // 生成图片URL
+    const timestamp = new Date().getTime();
+    const fileName = file.name.replace(/\.[^/.]+$/, ""); // 移除扩展名
+    const imageUrl = `${customDomain}/uploads/${fileName}_${timestamp}.${file.name.split('.').pop()}`;
+    
+    // 插入Markdown
+    const markdown = `![${alt}](${imageUrl})`;
+    insertAtCursor(markdown);
+    
+    // 关闭模态框
+    setTimeout(() => {
+      document.getElementById('insertModal').style.display = 'none';
+    }, 1000);
+  }, 1500);
+}
+
+// 插入视频功能
+document.getElementById('insertVideoBtn').addEventListener('click', function() {
+  const url = document.getElementById('videoUrl').value;
+  const platform = document.getElementById('videoPlatform').value;
+  
+  if (url) {
+    let markdown = '';
+    if (platform === 'youtube') {
+      // 提取YouTube视频ID
+      const videoId = url.match(/[?&]v=([^&]+)/)?.[1] || url.split('/').pop();
+      markdown = `<iframe width="560" height="315" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe>`;
+    } else if (platform === 'vimeo') {
+      const videoId = url.split('/').pop();
+      markdown = `<iframe src="https://player.vimeo.com/video/${videoId}" width="640" height="360" frameborder="0" allowfullscreen></iframe>`;
+    } else {
+      markdown = `<video src="${url}" controls></video>`;
+    }
+    
+    insertAtCursor(markdown);
+    document.getElementById('insertModal').style.display = 'none';
+  } else {
+    alert('请输入视频URL');
+  }
+});
+
+// 插入文件功能
+document.getElementById('insertFileBtn').addEventListener('click', function() {
+  const url = document.getElementById('fileUrl').value;
+  const text = document.getElementById('fileText').value || '下载文件';
+  
+  if (url) {
+    const markdown = `[${text}](${url})`;
+    insertAtCursor(markdown);
+    document.getElementById('insertModal').style.display = 'none';
+  } else {
+    alert('请输入文件URL');
+  }
+});
+
+<!-- 插入其他内容 -->
+document.getElementById('insertOtherBtn').addEventListener('click', function() {
+  const type = document.getElementById('otherType').value;
+  let content = '';
+  
+  switch (type) {
+    case 'table':
+      content = `| 标题1 | 标题2 | 标题3 |
+|------|------|------|
+| 内容1 | 内容2 | 内容3 |
+| 内容4 | 内容5 | 内容6 |`;
+      break;
+    case 'code':
+      content = "```语言\n// 在这里输入代码\n```";
+      break;
+    case 'quote':
+      content = "> 引用内容";
+      break;
+    case 'divider':
+      content = "---";
+      break;
+  }
+  
+  if (content) {
+    insertAtCursor(content);
+    document.getElementById('insertModal').style.display = 'none';
+  }
+});
+
+// 在光标位置插入内容
+function insertAtCursor(text) {
+  const editor = document.getElementById('editor');
+  const start = editor.selectionStart;
+  const end = editor.selectionEnd;
+  const before = editor.value.substring(0, start);
+  const after = editor.value.substring(end);
+  
+  editor.value = before + text + after;
+  editor.selectionStart = start + text.length;
+  editor.selectionEnd = start + text.length;
+  editor.focus();
+  
+  // 触发输入事件以更新预览
+  const event = new Event('input', { bubbles: true });
+  editor.dispatchEvent(event);
+}
+
+
+
+            // 图床服务切换
+            document.getElementById('imageHostService').addEventListener('change', function () {
+                document.getElementById('githubConfig').style.display = 'none';
+                document.getElementById('giteeConfig').style.display = 'none';
+                document.getElementById('customConfig').style.display = 'none';
+
+                if (this.value === 'github') {
+                    document.getElementById('githubConfig').style.display = 'block';
+                } else if (this.value === 'gitee') {
+                    document.getElementById('giteeConfig').style.display = 'block';
+                } else if (this.value === 'custom') {
+                    document.getElementById('customConfig').style.display = 'block';
+                }
+            });
+
+            // 测试图床连接
+            document.getElementById('testImageHostBtn').addEventListener('click', function () {
+                const service = document.getElementById('imageHostService').value;
+                let config = {};
+
+                if (service === 'github') {
+                    config = {
+                        username: document.getElementById('githubUsername').value,
+                        repo: document.getElementById('githubRepo').value,
+                        branch: document.getElementById('githubBranch').value,
+                        path: document.getElementById('githubPath').value,
+                        token: document.getElementById('githubToken').value
+                    };
+                } else if (service === 'gitee') {
+                    config = {
+                        username: document.getElementById('giteeUsername').value,
+                        repo: document.getElementById('giteeRepo').value,
+                        branch: document.getElementById('giteeBranch').value,
+                        path: document.getElementById('giteePath').value,
+                        token: document.getElementById('giteeToken').value
+                    };
+                } else if (service === 'custom') {
+                    config = {
+                        apiUrl: document.getElementById('customApiUrl').value,
+                        uploadPath: document.getElementById('customUploadPath').value,
+                        apiKey: document.getElementById('customApiKey').value
+                    };
+                }
+
+                // 模拟测试连接
+                alert(`正在测试${service}图床连接...`);
+                // 实际实现中这里会有AJAX请求测试连接
+            });
+
+
+            // 模板管理功能
+            const templates = JSON.parse(localStorage.getItem('mdEditorTemplates') || '[]');
+
+            // 渲染模板列表
+            function renderTemplateList() {
+                const templateList = document.getElementById('templateList');
+                templateList.innerHTML = '';
+
+                templates.forEach((template, index) => {
+                    const templateItem = document.createElement('div');
+                    templateItem.className = 'repo-item';
+                    templateItem.innerHTML = `
+            <input type="radio" name="template" id="template${index}" value="${index}">
+            <label for="template${index}" class="repo-url">${template.name}</label>
+            <div class="repo-actions">
+                <button class="repo-action-btn edit-btn"><i class="fas fa-edit"></i></button>
+                <button class="repo-action-btn delete-btn"><i class="fas fa-trash"></i></button>
+            </div>
+        `;
+                    templateList.appendChild(templateItem);
+
+                    // 编辑按钮
+                    templateItem.querySelector('.edit-btn').addEventListener('click', function () {
+                        document.getElementById('templateContent').value = template.content;
+                    });
+
+                    // 删除按钮
+                    templateItem.querySelector('.delete-btn').addEventListener('click', function () {
+                        if (confirm('确定要删除此模板吗？')) {
+                            templates.splice(index, 1);
+                            saveTemplates();
+                            renderTemplateList();
+                        }
+                    });
+                });
+            }
+
+            // 添加模板按钮
+            document.getElementById('addTemplateBtn').addEventListener('click', function () {
+                const templateName = prompt('请输入模板名称');
+                if (templateName && templateName.trim() !== '') {
+                    const templateContent = document.getElementById('templateContent').value;
+                    if (templateContent.trim() !== '') {
+                        templates.push({
+                            name: templateName.trim(),
+                            content: templateContent
+                        });
+                        saveTemplates();
+                        renderTemplateList();
+                    } else {
+                        alert('模板内容不能为空');
+                    }
+                }
+            });
+
+            // 保存模板
+            function saveTemplates() {
+                localStorage.setItem('mdEditorTemplates', JSON.stringify(templates));
+            }
+
+            // 在新建文件时应用模板
+            function createNewFile(name, content = '', customVars = {}) {
+                // 替换内置变量
+                const now = new Date();
+                const formattedDate = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')}`;
+                const formattedTime = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+                const fileNameWithoutExt = name.replace(/\.\w+$/, '');
+
+                // 内置变量映射
+                const builtInVars = {
+                    '{{date}}': formattedDate,
+                    '{{time}}': formattedTime,
+                    '{{datetime}}': `${formattedDate} ${formattedTime}`,
+                    '{{filename}}': fileNameWithoutExt,
+                    '{{year}}': now.getFullYear().toString(),
+                    '{{month}}': (now.getMonth() + 1).toString().padStart(2, '0'),
+                    '{{day}}': now.getDate().toString().padStart(2, '0')
+                };
+
+                // 应用内置变量替换
+                let processedContent = content;
+                for (const [key, value] of Object.entries(builtInVars)) {
+                    processedContent = processedContent.replace(new RegExp(key, 'g'), value);
+                }
+
+                // 应用自定义变量替换
+                for (const [key, value] of Object.entries(customVars)) {
+                    processedContent = processedContent.replace(new RegExp(`{{${key}}}`, 'g'), value);
+                }
+
+                // 创建新文件
+                const newFile = {
+                    id: Date.now().toString(),
+                    name: name,
+                    content: processedContent,
+                    createdAt: new Date(),
+                    updatedAt: new Date(),
+                    history: []
+                };
+
+                files.push(newFile);
+                saveFiles();
+                renderFileList();
+                openFile(newFile.id);
+                return newFile;
+            }
             // 更新存储方式显示的函数
             function updateStorageInfo() {
                 if (appConfig.storage.git.repoUrl) {
@@ -1516,23 +1979,6 @@ function helloWorld() {
                 });
             }
 
-            // 创建新文件
-            function createNewFile(name, content = '') {
-                const newFile = {
-                    id: Date.now().toString(),
-                    name: name,
-                    content: content,
-                    createdAt: new Date(),
-                    updatedAt: new Date(),
-                    history: []
-                };
-
-                files.push(newFile);
-                saveFiles();
-                renderFileList();
-                openFile(newFile.id);
-                return newFile;
-            }
 
             // 保存文件
             function saveFile(fileId, content) {
@@ -1855,21 +2301,132 @@ function helloWorld() {
 
             // 切换侧边栏
             logo.addEventListener('click', function () {
-                sidebar.classList.toggle('collapsed');
-                const icon = sidebarToggle.querySelector('i');
-                if (sidebar.classList.contains('collapsed')) {
-                    icon.className = 'fas fa-chevron-right';
-                } else {
-                    icon.className = 'fas fa-chevron-left';
-                }
+                sidebar.classList.toggle('open');
             });
 
             // 新建文件
+            // addFileBtn.addEventListener('click', function () {
+            //     const fileName = prompt('请输入新文件名（以.md结尾）', '新文档.md');
+            //     if (fileName && fileName.trim() !== '') {
+            //         createNewFile(fileName.trim());
+            //     }
+            // });
+
+            // 新建文件
             addFileBtn.addEventListener('click', function () {
-                const fileName = prompt('请输入新文件名（以.md结尾）', '新文档.md');
-                if (fileName && fileName.trim() !== '') {
-                    createNewFile(fileName.trim());
-                }
+                // 显示模板选择对话框
+                const templateDialog = document.createElement('div');
+                templateDialog.style.position = 'fixed';
+                templateDialog.style.top = '0';
+                templateDialog.style.left = '0';
+                templateDialog.style.width = '100%';
+                templateDialog.style.height = '100%';
+                templateDialog.style.backgroundColor = 'rgba(0,0,0,0.5)';
+                templateDialog.style.zIndex = '1000';
+                templateDialog.style.display = 'flex';
+                templateDialog.style.justifyContent = 'center';
+                templateDialog.style.alignItems = 'center';
+
+                templateDialog.innerHTML = `
+        <div style="background: white; padding: 20px; border-radius: 8px; width: 80%; max-width: 500px;">
+            <h3>选择模板</h3>
+            <div id="templateSelection" style="margin: 15px 0;">
+                <div>
+                    <input type="radio" name="template" id="noTemplate" value="none" checked>
+                    <label for="noTemplate">无模板</label>
+                </div>
+                <!-- 模板选项将通过JS动态生成 -->
+            </div>
+            <div id="customVarsSection" style="display: none; margin-bottom: 15px;">
+                <h4>自定义变量</h4>
+                <div id="customVarsContainer"></div>
+                <button id="addVarBtn" class="editor-btn secondary" style="margin-top: 10px;">
+                    <i class="fas fa-plus"></i> 添加变量
+                </button>
+            </div>
+            <div style="margin-bottom: 15px;">
+                <label for="fileNameInput">文件名：</label>
+                <input type="text" id="fileNameInput" value="新文档.md" style="width: 100%; padding: 8px;">
+            </div>
+            <div style="display: flex; justify-content: flex-end; gap: 10px;">
+                <button id="cancelTemplateBtn" class="editor-btn secondary">取消</button>
+                <button id="confirmTemplateBtn" class="editor-btn">创建</button>
+            </div>
+        </div>
+    `;
+
+                document.body.appendChild(templateDialog);
+
+                // 渲染模板选项
+                const templateSelection = document.getElementById('templateSelection');
+                templates.forEach((template, index) => {
+                    const templateOption = document.createElement('div');
+                    templateOption.innerHTML = `
+            <input type="radio" name="template" id="template${index}" value="${index}">
+            <label for="template${index}">${template.name}</label>
+        `;
+                    templateSelection.appendChild(templateOption);
+                });
+
+                // 监听模板选择变化
+                document.querySelectorAll('input[name="template"]').forEach(radio => {
+                    radio.addEventListener('change', function () {
+                        const customVarsSection = document.getElementById('customVarsSection');
+                        customVarsSection.style.display = this.value === 'none' ? 'none' : 'block';
+                    });
+                });
+
+                // 添加变量按钮
+                document.getElementById('addVarBtn').addEventListener('click', function () {
+                    const varContainer = document.getElementById('customVarsContainer');
+                    const varIndex = varContainer.children.length;
+
+                    const varInput = document.createElement('div');
+                    varInput.style.display = 'flex';
+                    varInput.style.marginBottom = '5px';
+                    varInput.innerHTML = `
+            <input type="text" placeholder="变量名" style="flex: 1; margin-right: 5px; padding: 5px;">
+            <input type="text" placeholder="值" style="flex: 2; padding: 5px;">
+        `;
+                    varContainer.appendChild(varInput);
+                });
+
+                // 取消按钮
+                document.getElementById('cancelTemplateBtn').addEventListener('click', function () {
+                    document.body.removeChild(templateDialog);
+                });
+
+                // 确认按钮
+                document.getElementById('confirmTemplateBtn').addEventListener('click', function () {
+                    const fileName = document.getElementById('fileNameInput').value.trim();
+                    if (!fileName) {
+                        alert('请输入文件名');
+                        return;
+                    }
+
+                    const selectedTemplate = document.querySelector('input[name="template"]:checked');
+                    let templateContent = '';
+                    let customVars = {};
+
+                    if (selectedTemplate && selectedTemplate.value !== 'none') {
+                        const templateIndex = parseInt(selectedTemplate.value);
+                        templateContent = templates[templateIndex].content;
+
+                        // 收集自定义变量
+                        const varInputs = document.querySelectorAll('#customVarsContainer > div');
+                        varInputs.forEach(inputDiv => {
+                            const keyInput = inputDiv.querySelector('input:first-child');
+                            const valueInput = inputDiv.querySelector('input:last-child');
+                            if (keyInput.value && valueInput.value) {
+                                customVars[keyInput.value] = valueInput.value;
+                            }
+                        });
+                    }
+
+                    document.body.removeChild(templateDialog);
+                    createNewFile(fileName, templateContent, customVars);
+                });
+
             });
 
             // 同步按钮点击事件
@@ -1933,7 +2490,24 @@ function helloWorld() {
             // 数据导入导出菜单
             dataMenu.addEventListener('click', function () {
                 dataModal.style.display = 'flex';
-                
+                // 移除所有标签的活动状态
+                document.querySelectorAll('#dataModal .tab').forEach(tab => {
+                    tab.classList.remove('active');
+                });
+
+                // 移除所有标签内容的活动状态
+                document.querySelectorAll('#dataModal .tab-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+
+                // 激活导入标签和内容
+                const importTab = document.querySelector('#dataModal .tab[data-tab="import"]');
+                const importContent = document.getElementById('importTab');
+
+                if (importTab && importContent) {
+                    importTab.classList.add('active');
+                    importContent.classList.add('active');
+                }
             });
 
             // 关闭模态框
@@ -2006,8 +2580,8 @@ function helloWorld() {
             document.querySelectorAll('.tab').forEach(tab => {
                 tab.addEventListener('click', function () {
                     const tabId = this.dataset.tab;
-                    console.log("------"+tabId);
-                    
+                    console.log("------" + tabId);
+
                     // 移除所有活动标签
                     document.querySelectorAll('.tab').forEach(t => {
                         t.classList.remove('active');
