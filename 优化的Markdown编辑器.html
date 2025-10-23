@@ -1,0 +1,1795 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Markdown编辑器</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/lib/common.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.7.0/build/styles/github.min.css">
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2980b9;
+            --sidebar-bg: #2c3e50;
+            --sidebar-hover: #34495e;
+            --header-bg: #f8f9fa;
+            --border-color: #e0e0e0;
+            --editor-bg: #ffffff;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --success-color: #2ecc71;
+            --error-color: #e74c3c;
+            --dark-bg: #1e1e1e;
+            --dark-text: #f0f0f0;
+            --dark-border: #444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            background-color: #f5f7fa;
+            overflow: hidden;
+            color: #333;
+        }
+
+        body.dark-theme {
+            background-color: var(--dark-bg);
+            color: var(--dark-text);
+        }
+
+        /* 顶部菜单栏 */
+        .header {
+            background-color: var(--header-bg);
+            padding: 12px 20px;
+            box-shadow: var(--shadow);
+            z-index: 10;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .dark-theme .header {
+            background-color: #252526;
+            color: var(--dark-text);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo i {
+            color: var(--primary-color);
+            font-size: 24px;
+        }
+
+        .logo h1 {
+            font-size: 22px;
+            font-weight: 600;
+        }
+
+        .dark-theme .logo h1 {
+            color: var(--dark-text);
+        }
+
+        .menu-bar {
+            display: flex;
+            gap: 15px;
+        }
+
+        .menu-item {
+            position: relative;
+            padding: 8px 12px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .dark-theme .menu-item {
+            color: var(--dark-text);
+        }
+
+        .menu-item:hover {
+            background-color: rgba(52, 152, 219, 0.1);
+            color: var(--primary-color);
+        }
+
+        .dark-theme .menu-item:hover {
+            background-color: rgba(52, 152, 219, 0.2);
+        }
+
+        .menu-item i {
+            margin-right: 8px;
+        }
+
+        /* 主内容区域 */
+        .main-container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        /* 左侧文件列表 */
+        .sidebar {
+            width: 280px;
+            background-color: var(--sidebar-bg);
+            color: white;
+            transition: all 0.3s ease;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            z-index: 5;
+        }
+
+        .dark-theme .sidebar {
+            background-color: #252526;
+        }
+
+        .sidebar.collapsed {
+            width: 50px;
+        }
+
+        .sidebar-header {
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-title {
+            font-size: 18px;
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .toggle-btn {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 18px;
+            padding: 5px;
+            min-width: 30px;
+        }
+
+        .file-list {
+            flex: 1;
+            padding: 10px 0;
+        }
+
+        .file-item {
+            padding: 12px 15px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            position: relative;
+        }
+
+        .file-item:hover {
+            background-color: var(--sidebar-hover);
+        }
+
+        .file-item.active {
+            background-color: var(--sidebar-hover);
+            border-left: 3px solid var(--primary-color);
+        }
+
+        .file-item i {
+            margin-right: 10px;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        .file-name {
+            flex: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .file-time {
+            font-size: 12px;
+            opacity: 0.8;
+            margin-left: 10px;
+            white-space: nowrap;
+        }
+
+        .file-actions {
+            display: flex;
+            gap: 5px;
+            opacity: 0;
+            transition: opacity 0.2s;
+            position: absolute;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 4px;
+            padding: 2px;
+        }
+
+        .file-item:hover .file-actions {
+            opacity: 1;
+        }
+
+        .file-action-btn {
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.7);
+            cursor: pointer;
+            font-size: 14px;
+            padding: 5px;
+        }
+
+        .file-action-btn:hover {
+            color: white;
+        }
+
+        .add-file-btn {
+            padding: 12px 15px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            color: rgba(255, 255, 255, 0.8);
+            transition: color 0.2s;
+        }
+
+        .add-file-btn:hover {
+            color: white;
+        }
+
+        .add-file-btn i {
+            margin-right: 10px;
+            flex-shrink: 0;
+        }
+
+        .add-file-btn span {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .sidebar.collapsed .sidebar-title,
+        .sidebar.collapsed .file-name,
+        .sidebar.collapsed .file-time,
+        .sidebar.collapsed .add-file-btn span {
+            display: none;
+        }
+
+        .sidebar.collapsed .file-item {
+            padding: 15px;
+            justify-content: center;
+        }
+
+        .sidebar.collapsed .file-item i {
+            margin-right: 0;
+            font-size: 18px;
+        }
+
+        .sidebar.collapsed .add-file-btn {
+            justify-content: center;
+            padding: 15px;
+        }
+
+        .sidebar.collapsed .add-file-btn i {
+            margin-right: 0;
+            font-size: 18px;
+        }
+
+        .sidebar.collapsed .file-actions {
+            display: none;
+        }
+
+        /* 编辑区域 */
+        .editor-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--editor-bg);
+            overflow: hidden;
+        }
+
+        .dark-theme .editor-container {
+            background-color: #1e1e1e;
+        }
+
+        .editor-header {
+            padding: 12px 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .dark-theme .editor-header {
+            border-bottom-color: var(--dark-border);
+        }
+
+        .editor-title {
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .dark-theme .editor-title {
+            color: var(--dark-text);
+        }
+
+        .editor-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .editor-btn {
+            padding: 8px 12px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        .editor-btn:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .editor-btn.secondary {
+            background-color: #e0e0e0;
+            color: #333;
+        }
+
+        .dark-theme .editor-btn.secondary {
+            background-color: #444;
+            color: var(--dark-text);
+        }
+
+        .editor-btn.secondary:hover {
+            background-color: #d0d0d0;
+        }
+
+        .dark-theme .editor-btn.secondary:hover {
+            background-color: #555;
+        }
+
+        .editor-content {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+
+        .editor-mode {
+            display: none;
+            width: 100%;
+            height: 100%;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .editor-mode.active {
+            display: block;
+        }
+
+        #editor {
+            width: 100%;
+            height: 100%;
+            min-height: 300px;
+            border: none;
+            outline: none;
+            resize: none;
+            font-size: 16px;
+            line-height: 1.6;
+            padding: 10px;
+            background-color: transparent;
+            color: #333;
+            font-family: 'Consolas', 'Monaco', monospace;
+        }
+
+        .dark-theme #editor {
+            color: var(--dark-text);
+            background-color: #1e1e1e;
+        }
+
+        #preview {
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .dark-theme #preview {
+            color: var(--dark-text);
+        }
+
+        /* 状态栏 */
+        .status-bar {
+            padding: 8px 20px;
+            background-color: var(--header-bg);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .dark-theme .status-bar {
+            background-color: #252526;
+            border-top-color: var(--dark-border);
+            color: #aaa;
+        }
+
+        .sync-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .sync-status i {
+            font-size: 14px;
+        }
+
+        .sync-status.synced {
+            color: var(--success-color);
+        }
+
+        .sync-status.error {
+            color: var(--error-color);
+        }
+
+        /* 模态框 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 100;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            border-radius: 8px;
+            width: 500px;
+            max-width: 90%;
+            max-height: 90vh;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .dark-theme .modal-content {
+            background-color: #252526;
+            color: var(--dark-text);
+        }
+
+        .modal-header {
+            padding: 15px 20px;
+            background-color: var(--header-bg);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .dark-theme .modal-header {
+            background-color: #2d2d2d;
+            border-bottom-color: var(--dark-border);
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .dark-theme .modal-title {
+            color: var(--dark-text);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #777;
+        }
+
+        .dark-theme .modal-close {
+            color: #aaa;
+        }
+
+        .modal-body {
+            padding: 20px;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .dark-theme .modal-body {
+            background-color: #1e1e1e;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .dark-theme .form-label {
+            color: var(--dark-text);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 16px;
+            background-color: white;
+        }
+
+        .dark-theme .form-input {
+            background-color: #333;
+            border-color: #444;
+            color: var(--dark-text);
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 16px;
+            background-color: white;
+        }
+
+        .dark-theme .form-select {
+            background-color: #333;
+            border-color: #444;
+            color: var(--dark-text);
+        }
+
+        .form-textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 16px;
+            min-height: 150px;
+            resize: vertical;
+            background-color: white;
+        }
+
+        .dark-theme .form-textarea {
+            background-color: #333;
+            border-color: #444;
+            color: var(--dark-text);
+        }
+
+        .repo-list {
+            margin-bottom: 15px;
+        }
+
+        .repo-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            margin-bottom: 10px;
+            background-color: #f9f9f9;
+        }
+
+        .dark-theme .repo-item {
+            background-color: #333;
+            border-color: #444;
+        }
+
+        .repo-item input[type="radio"] {
+            margin-right: 10px;
+        }
+
+        .repo-item .repo-url {
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .repo-item .repo-actions {
+            display: flex;
+            gap: 5px;
+        }
+
+        .repo-action-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #777;
+        }
+
+        .dark-theme .repo-action-btn {
+            color: #aaa;
+        }
+
+        .repo-action-btn:hover {
+            color: var(--primary-color);
+        }
+
+        .tab-container {
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 15px;
+        }
+
+        .dark-theme .tab-container {
+            border-bottom-color: var(--dark-border);
+        }
+
+        .tab {
+            padding: 10px 15px;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+        }
+
+        .tab.active {
+            border-bottom-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .dark-theme .tab.active {
+            color: var(--primary-color);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .modal-footer {
+            padding: 15px 20px;
+            background-color: var(--header-bg);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .dark-theme .modal-footer {
+            background-color: #2d2d2d;
+            border-top-color: var(--dark-border);
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .sidebar {
+                position: absolute;
+                left: 0;
+                top: 60px;
+                bottom: 0;
+                z-index: 5;
+                transform: translateX(-100%);
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .toggle-btn {
+                display: block;
+            }
+            
+            .menu-bar {
+                gap: 8px;
+            }
+            
+            .menu-item {
+                padding: 6px 8px;
+                font-size: 14px;
+            }
+            
+            .menu-item span {
+                display: none;
+            }
+            
+            .menu-item i {
+                margin-right: 0;
+                font-size: 18px;
+            }
+            
+            .editor-btn span {
+                display: none;
+            }
+            
+            .editor-btn i {
+                margin-right: 0;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .logo h1 {
+                font-size: 18px;
+            }
+            
+            .editor-title {
+                font-size: 14px;
+                max-width: 150px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            
+            .status-bar {
+                font-size: 12px;
+                padding: 6px 10px;
+            }
+        }
+
+        /* Markdown样式 */
+        #preview h1, #preview h2, #preview h3 {
+            margin-top: 24px;
+            margin-bottom: 16px;
+            font-weight: 600;
+            line-height: 1.25;
+        }
+
+        #preview h1 {
+            font-size: 2em;
+            border-bottom: 1px solid #eaecef;
+            padding-bottom: 0.3em;
+        }
+
+        .dark-theme #preview h1 {
+            border-bottom-color: #444;
+        }
+
+        #preview h2 {
+            font-size: 1.5em;
+            border-bottom: 1px solid #eaecef;
+            padding-bottom: 0.3em;
+        }
+
+        .dark-theme #preview h2 {
+            border-bottom-color: #444;
+        }
+
+        #preview p {
+            margin-bottom: 16px;
+        }
+
+        #preview a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        #preview a:hover {
+            text-decoration: underline;
+        }
+
+        #preview code {
+            background-color: rgba(27,31,35,0.05);
+            border-radius: 3px;
+            padding: 0.2em 0.4em;
+            font-family: monospace;
+        }
+
+        .dark-theme #preview code {
+            background-color: rgba(255,255,255,0.1);
+        }
+
+        #preview pre {
+            background-color: #f6f8fa;
+            border-radius: 6px;
+            padding: 16px;
+            overflow: auto;
+            margin-bottom: 16px;
+        }
+
+        .dark-theme #preview pre {
+            background-color: #2d2d2d;
+        }
+
+        #preview blockquote {
+            padding: 0 1em;
+            color: #6a737d;
+            border-left: 0.25em solid #dfe2e5;
+            margin: 0 0 16px 0;
+        }
+
+        .dark-theme #preview blockquote {
+            color: #aaa;
+            border-left-color: #555;
+        }
+
+        #preview ul, #preview ol {
+            margin-bottom: 16px;
+            padding-left: 2em;
+        }
+
+        #preview li {
+            margin-bottom: 0.5em;
+        }
+
+        #preview table {
+            border-collapse: collapse;
+            margin-bottom: 16px;
+            width: 100%;
+        }
+
+        #preview th, #preview td {
+            border: 1px solid #dfe2e5;
+            padding: 6px 13px;
+        }
+
+        .dark-theme #preview th, 
+        .dark-theme #preview td {
+            border-color: #444;
+        }
+
+        #preview th {
+            background-color: #f6f8fa;
+            font-weight: 600;
+        }
+
+        .dark-theme #preview th {
+            background-color: #333;
+        }
+
+        #preview img {
+            max-width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部菜单栏 -->
+    <header class="header">
+        <div class="logo">
+            <i class="fas fa-file-alt"></i>
+            <h1>Markdown编辑器</h1>
+        </div>
+        <div class="menu-bar">
+            <div class="menu-item" id="viewMenu">
+                <i class="fas fa-eye"></i>
+                <span>视图</span>
+            </div>
+            <div class="menu-item" id="prefMenu">
+                <i class="fas fa-cog"></i>
+                <span>偏好设置</span>
+            </div>
+            <div class="menu-item" id="historyMenu">
+                <i class="fas fa-history"></i>
+                <span>历史版本</span>
+            </div>
+            <div class="menu-item" id="storageMenu">
+                <i class="fas fa-database"></i>
+                <span>存储设置</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主内容区域 -->
+    <div class="main-container">
+        <!-- 左侧文件列表 -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-title">文件列表</div>
+                <button class="toggle-btn" id="sidebarToggle">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+            </div>
+            <div class="file-list" id="fileList">
+                <!-- 文件列表将通过JS动态生成 -->
+            </div>
+            <div class="add-file-btn" id="addFileBtn">
+                <i class="fas fa-plus-circle"></i>
+                <span>新建文件</span>
+            </div>
+        </div>
+
+        <!-- 编辑区域 -->
+        <div class="editor-container">
+            <div class="editor-header">
+                <div class="editor-title" id="editorTitle">未命名.md</div>
+                <div class="editor-actions">
+                    <button class="editor-btn secondary" id="syncBtn">
+                        <i class="fas fa-sync-alt"></i>
+                        <span>同步</span>
+                    </button>
+                </div>
+            </div>
+            <div class="editor-content">
+                <div class="editor-mode active" id="editMode">
+                    <textarea id="editor" placeholder="开始输入Markdown内容..."></textarea>
+                </div>
+                <div class="editor-mode" id="previewMode">
+                    <div id="preview"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 状态栏 -->
+    <div class="status-bar">
+        <div class="word-count">字数: <span id="wordCount">0</span></div>
+        <div class="sync-status" id="syncStatus">
+            <i class="fas fa-circle"></i> <span>未同步</span>
+        </div>
+    </div>
+
+    <!-- 视图设置模态框 -->
+    <div class="modal" id="viewModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">视图设置</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">编辑模式</label>
+                    <div>
+                        <input type="radio" id="editOnly" name="viewMode" value="edit" checked>
+                        <label for="editOnly">仅编辑</label>
+                    </div>
+                    <div>
+                        <input type="radio" id="previewOnly" name="viewMode" value="preview">
+                        <label for="previewOnly">仅预览</label>
+                    </div>
+                    <div>
+                        <input type="radio" id="splitView" name="viewMode" value="split">
+                        <label for="splitView">分屏显示</label>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="editor-btn secondary" id="cancelView">取消</button>
+                <button class="editor-btn" id="saveView">保存设置</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 偏好设置模态框 -->
+    <div class="modal" id="prefModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">偏好设置</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="tab-container">
+                    <div class="tab active" data-tab="theme">主题</div>
+                    <div class="tab" data-tab="importExport">导入/导出</div>
+                </div>
+                
+                <div class="tab-content active" id="themeTab">
+                    <div class="form-group">
+                        <label class="form-label">主题设置</label>
+                        <div>
+                            <input type="radio" id="lightTheme" name="theme" value="light" checked>
+                            <label for="lightTheme">亮色主题</label>
+                        </div>
+                        <div>
+                            <input type="radio" id="darkTheme" name="theme" value="dark">
+                            <label for="darkTheme">暗色主题</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">编辑器字体大小</label>
+                        <input type="range" min="12" max="24" value="16" class="form-input" id="fontSize">
+                        <div id="fontSizeValue">16px</div>
+                    </div>
+                </div>
+                
+                <div class="tab-content" id="importExportTab">
+                    <div class="form-group">
+                        <label class="form-label">导入配置</label>
+                        <input type="file" id="configImport" class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">导出配置</label>
+                        <button class="editor-btn secondary" id="exportConfigBtn">导出配置</button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="editor-btn secondary" id="cancelPref">取消</button>
+                <button class="editor-btn" id="savePref">保存设置</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 历史版本模态框 -->
+    <div class="modal" id="historyModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">历史版本</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">选择文件</label>
+                    <select class="form-select" id="historyFileSelect">
+                        <!-- 文件选项将通过JS动态生成 -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">历史版本</label>
+                    <div id="historyList">
+                        <!-- 历史版本列表将通过JS动态生成 -->
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="editor-btn secondary" id="closeHistory">关闭</button>
+                <button class="editor-btn" id="restoreVersion">恢复此版本</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 存储设置模态框 -->
+    <div class="modal" id="storageModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">存储设置</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="tab-container">
+                    <div class="tab active" data-tab="local">本地存储</div>
+                    <div class="tab" data-tab="git">Git存储</div>
+                    <div class="tab" data-tab="webdav">WebDAV</div>
+                </div>
+                
+                <div class="tab-content active" id="localTab">
+                    <div class="form-group">
+                        <label class="form-label">自动保存</label>
+                        <div>
+                            <input type="checkbox" id="autoSave" checked>
+                            <label for="autoSave">启用自动保存</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">保存间隔（秒）</label>
+                        <input type="number" min="5" max="300" value="30" class="form-input" id="saveInterval">
+                    </div>
+                </div>
+                
+                <div class="tab-content" id="gitTab">
+                    <div class="form-group">
+                        <label class="form-label">仓库URL</label>
+                        <input type="text" class="form-input" id="gitRepoUrl" placeholder="https://github.com/user/repo.git">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">分支</label>
+                        <input type="text" class="form-input" id="gitBranch" value="main">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">访问令牌</label>
+                        <input type="password" class="form-input" id="gitToken" placeholder="输入访问令牌">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">自动同步</label>
+                        <div>
+                            <input type="checkbox" id="gitAutoSync" checked>
+                            <label for="gitAutoSync">保存时自动同步</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tab-content" id="webdavTab">
+                    <div class="form-group">
+                        <label class="form-label">服务器URL</label>
+                        <input type="text" class="form-input" id="webdavUrl" placeholder="https://example.com/dav">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">用户名</label>
+                        <input type="text" class="form-input" id="webdavUser" placeholder="用户名">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">密码</label>
+                        <input type="password" class="form-input" id="webdavPass" placeholder="密码">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">远程路径</label>
+                        <input type="text" class="form-input" id="webdavPath" value="/markdown">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="editor-btn secondary" id="cancelStorage">取消</button>
+                <button class="editor-btn" id="saveStorage">保存设置</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 初始化编辑器
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM元素
+            const editor = document.getElementById('editor');
+            const preview = document.getElementById('preview');
+            const sidebar = document.querySelector('.sidebar');
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const syncBtn = document.getElementById('syncBtn');
+            const fileList = document.getElementById('fileList');
+            const addFileBtn = document.getElementById('addFileBtn');
+            const editorTitle = document.getElementById('editorTitle');
+            const wordCount = document.getElementById('wordCount');
+            const syncStatus = document.getElementById('syncStatus');
+            
+            // 模态框元素
+            const viewModal = document.getElementById('viewModal');
+            const prefModal = document.getElementById('prefModal');
+            const historyModal = document.getElementById('historyModal');
+            const storageModal = document.getElementById('storageModal');
+            
+            // 菜单按钮
+            const viewMenu = document.getElementById('viewMenu');
+            const prefMenu = document.getElementById('prefMenu');
+            const historyMenu = document.getElementById('historyMenu');
+            const storageMenu = document.getElementById('storageMenu');
+            
+            // 应用状态
+            let files = [];
+            let currentFileId = null;
+            let appConfig = {
+                theme: 'light',
+                fontSize: 16,
+                viewMode: 'edit',
+                storage: {
+                    local: {
+                        autoSave: true,
+                        saveInterval: 30
+                    },
+                    git: {
+                        repoUrl: '',
+                        branch: 'main',
+                        token: '',
+                        autoSync: true
+                    },
+                    webdav: {
+                        url: '',
+                        user: '',
+                        pass: '',
+                        path: '/markdown'
+                    }
+                }
+            };
+            
+            // 初始化文件系统
+            function initFileSystem() {
+                // 尝试从localStorage加载文件
+                const savedFiles = localStorage.getItem('mdEditorFiles');
+                if (savedFiles) {
+                    try {
+                        files = JSON.parse(savedFiles);
+                    } catch (e) {
+                        console.error('Failed to parse saved files', e);
+                        files = [];
+                    }
+                }
+                
+                // 如果没有文件，创建一个默认文件
+                if (files.length === 0) {
+                    createNewFile('欢迎使用.md', `# 欢迎使用Markdown编辑器
+
+这是一个所见即所得的Markdown编辑器。
+
+## 主要功能
+
+- **实时渲染**：输入Markdown标签后回车即可看到渲染效果
+- **文件管理**：左侧文件列表可管理多个文档
+- **多存储支持**：支持本地、Git和WebDAV存储
+- **历史版本**：支持文档历史版本管理
+
+### 使用示例
+
+\`\`\`javascript
+function helloWorld() {
+    console.log('Hello, Markdown Editor!');
+}
+\`\`\`
+
+> 提示：尝试输入Markdown语法查看实时渲染效果
+
+**加粗文本** 和 *斜体文本*
+
+[这是一个链接](https://example.com)
+
+| 功能         | 状态     |
+|--------------|----------|
+| 实时渲染     | 已启用   |
+| Git同步      | 已配置   |
+| 历史版本     | 可用     |
+`);
+                }
+                
+                // 尝试从localStorage加载配置
+                const savedConfig = localStorage.getItem('mdEditorConfig');
+                if (savedConfig) {
+                    try {
+                        appConfig = JSON.parse(savedConfig);
+                        applyConfig();
+                    } catch (e) {
+                        console.error('Failed to parse config', e);
+                    }
+                }
+                
+                // 渲染文件列表
+                renderFileList();
+                
+                // 打开第一个文件
+                if (files.length > 0) {
+                    openFile(files[0].id);
+                }
+            }
+            
+            // 应用配置
+            function applyConfig() {
+                // 应用主题
+                if (appConfig.theme === 'dark') {
+                    document.body.classList.add('dark-theme');
+                } else {
+                    document.body.classList.remove('dark-theme');
+                }
+                
+                // 应用字体大小
+                editor.style.fontSize = appConfig.fontSize + 'px';
+                document.getElementById('fontSizeValue').textContent = appConfig.fontSize + 'px';
+                
+                // 应用视图模式
+                document.querySelectorAll('.editor-mode').forEach(mode => {
+                    mode.classList.remove('active');
+                });
+                
+                if (appConfig.viewMode === 'edit') {
+                    document.getElementById('editMode').classList.add('active');
+                } else if (appConfig.viewMode === 'preview') {
+                    document.getElementById('previewMode').classList.add('active');
+                }
+                
+                // 更新单选按钮状态
+                document.querySelectorAll('input[name="theme"]').forEach(radio => {
+                    if (radio.value === appConfig.theme) {
+                        radio.checked = true;
+                    }
+                });
+                
+                document.querySelectorAll('input[name="viewMode"]').forEach(radio => {
+                    if (radio.value === appConfig.viewMode) {
+                        radio.checked = true;
+                    }
+                });
+            }
+            
+            // 创建新文件
+            function createNewFile(name, content = '') {
+                const newFile = {
+                    id: Date.now().toString(),
+                    name: name,
+                    content: content,
+                    createdAt: new Date(),
+                    updatedAt: new Date(),
+                    history: []
+                };
+                
+                files.push(newFile);
+                saveFiles();
+                renderFileList();
+                openFile(newFile.id);
+                return newFile;
+            }
+            
+            // 保存文件
+            function saveFile(fileId, content) {
+                const file = files.find(f => f.id === fileId);
+                if (file) {
+                    // 添加到历史记录
+                    if (file.content !== content) {
+                        file.history.push({
+                            content: file.content,
+                            savedAt: new Date()
+                        });
+                        
+                        // 保留最多10个历史版本
+                        if (file.history.length > 10) {
+                            file.history.shift();
+                        }
+                    }
+                    
+                    file.content = content;
+                    file.updatedAt = new Date();
+                    saveFiles();
+                    
+                    // 更新文件列表中的更新时间
+                    const fileElement = document.querySelector(`.file-item[data-id="${fileId}"]`);
+                    if (fileElement) {
+                        const timeElement = fileElement.querySelector('.file-time');
+                        if (timeElement) {
+                            timeElement.textContent = formatDate(file.updatedAt);
+                        }
+                    }
+                    
+                    // 自动同步
+                    if (appConfig.storage.git.autoSync && appConfig.storage.git.repoUrl) {
+                        syncToGit();
+                    }
+                }
+            }
+            
+            // 保存所有文件到localStorage
+            function saveFiles() {
+                localStorage.setItem('mdEditorFiles', JSON.stringify(files));
+            }
+            
+            // 保存配置
+            function saveConfig() {
+                localStorage.setItem('mdEditorConfig', JSON.stringify(appConfig));
+            }
+            
+            // 打开文件
+            function openFile(fileId) {
+                const file = files.find(f => f.id === fileId);
+                if (file) {
+                    currentFileId = file.id;
+                    editor.value = file.content;
+                    editorTitle.textContent = file.name;
+                    
+                    // 更新预览
+                    updatePreview();
+                    
+                    // 更新文件列表中的活动状态
+                    document.querySelectorAll('.file-item').forEach(item => {
+                        item.classList.remove('active');
+                    });
+                    const activeItem = document.querySelector(`.file-item[data-id="${fileId}"]`);
+                    if (activeItem) {
+                        activeItem.classList.add('active');
+                    }
+                    
+                    // 更新字数统计
+                    updateWordCount();
+                }
+            }
+            
+            // 删除文件
+            function deleteFile(fileId) {
+                if (files.length <= 1) {
+                    alert('不能删除最后一个文件');
+                    return;
+                }
+                
+                if (confirm('确定要删除此文件吗？')) {
+                    const index = files.findIndex(f => f.id === fileId);
+                    if (index !== -1) {
+                        files.splice(index, 1);
+                        saveFiles();
+                        renderFileList();
+                        
+                        // 如果删除的是当前打开的文件，打开第一个文件
+                        if (fileId === currentFileId) {
+                            openFile(files[0].id);
+                        }
+                    }
+                }
+            }
+            
+            // 重命名文件
+            function renameFile(fileId, newName) {
+                if (!newName.endsWith('.md')) {
+                    newName += '.md';
+                }
+                
+                const file = files.find(f => f.id === fileId);
+                if (file) {
+                    file.name = newName;
+                    saveFiles();
+                    renderFileList();
+                    
+                    // 如果重命名的是当前打开的文件，更新标题
+                    if (fileId === currentFileId) {
+                        editorTitle.textContent = newName;
+                    }
+                }
+            }
+            
+            // 渲染文件列表
+            function renderFileList() {
+                fileList.innerHTML = '';
+                
+                files.forEach(file => {
+                    const fileItem = document.createElement('div');
+                    fileItem.className = 'file-item';
+                    if (file.id === currentFileId) {
+                        fileItem.classList.add('active');
+                    }
+                    fileItem.dataset.id = file.id;
+                    
+                    fileItem.innerHTML = `
+                        <i class="far fa-file-alt"></i>
+                        <div class="file-name">${file.name}</div>
+                        <div class="file-time">${formatDate(file.updatedAt)}</div>
+                        <div class="file-actions">
+                            <button class="file-action-btn rename-btn"><i class="fas fa-pencil-alt"></i></button>
+                            <button class="file-action-btn delete-btn"><i class="fas fa-trash-alt"></i></button>
+                        </div>
+                    `;
+                    
+                    fileList.appendChild(fileItem);
+                    
+                    // 添加事件监听
+                    fileItem.addEventListener('click', function(e) {
+                        if (!e.target.closest('.file-action-btn')) {
+                            openFile(file.id);
+                        }
+                    });
+                    
+                    // 重命名按钮
+                    const renameBtn = fileItem.querySelector('.rename-btn');
+                    renameBtn.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        const newName = prompt('请输入新文件名', file.name);
+                        if (newName && newName.trim() !== '') {
+                            renameFile(file.id, newName.trim());
+                        }
+                    });
+                    
+                    // 删除按钮
+                    const deleteBtn = fileItem.querySelector('.delete-btn');
+                    deleteBtn.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        deleteFile(file.id);
+                    });
+                });
+            }
+            
+            // 格式化日期
+            function formatDate(date) {
+                const d = new Date(date);
+                return `${d.getMonth()+1}/${d.getDate()} ${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`;
+            }
+            
+            // 更新预览
+            function updatePreview() {
+                preview.innerHTML = marked.parse(editor.value);
+                
+                // 高亮代码块
+                document.querySelectorAll('pre code').forEach((block) => {
+                    // hljs.highlightBlock(block);
+                });
+            }
+            
+            // 更新字数统计
+            function updateWordCount() {
+                const text = editor.value;
+                const words = text.trim().split(/\s+/).filter(word => word.length > 0).length;
+                wordCount.textContent = words;
+            }
+            
+            // 同步到Git
+            function syncToGit() {
+                if (!currentFileId) return;
+                
+                const file = files.find(f => f.id === currentFileId);
+                if (!file) return;
+                
+                // 更新同步状态
+                syncStatus.innerHTML = '<i class="fas fa-sync fa-spin"></i> <span>同步中...</span>';
+                syncStatus.classList.remove('synced', 'error');
+                
+                // 模拟同步过程
+                setTimeout(() => {
+                    // 随机决定成功或失败
+                    const success = Math.random() > 0.2;
+                    
+                    if (success) {
+                        syncStatus.innerHTML = '<i class="fas fa-check-circle"></i> <span>同步成功</span>';
+                        syncStatus.classList.add('synced');
+                    } else {
+                        syncStatus.innerHTML = '<i class="fas fa-exclamation-circle"></i> <span>同步失败</span>';
+                        syncStatus.classList.add('error');
+                    }
+                }, 2000);
+            }
+            
+            // 配置Markdown渲染
+            marked.setOptions({
+                gfm: true,
+                breaks: true,
+                highlight: function(code, lang) {
+                    if (lang && hljs.getLanguage(lang)) {
+                        return hljs.highlight(lang, code).value;
+                    }
+                    return hljs.highlightAuto(code).value;
+                }
+            });
+            
+            // 初始渲染
+            initFileSystem();
+            
+            // 事件监听
+            editor.addEventListener('input', function() {
+                if (currentFileId) {
+                    saveFile(currentFileId, editor.value);
+                }
+                updatePreview();
+                updateWordCount();
+            });
+            
+            // 切换侧边栏
+            sidebarToggle.addEventListener('click', function() {
+                sidebar.classList.toggle('collapsed');
+                const icon = sidebarToggle.querySelector('i');
+                if (sidebar.classList.contains('collapsed')) {
+                    icon.className = 'fas fa-chevron-right';
+                } else {
+                    icon.className = 'fas fa-chevron-left';
+                }
+            });
+            
+            // 新建文件
+            addFileBtn.addEventListener('click', function() {
+                const fileName = prompt('请输入新文件名（以.md结尾）', '新文档.md');
+                if (fileName && fileName.trim() !== '') {
+                    createNewFile(fileName.trim());
+                }
+            });
+            
+            // 同步按钮点击事件
+            syncBtn.addEventListener('click', function() {
+                syncToGit();
+            });
+            
+            // 菜单按钮事件
+            viewMenu.addEventListener('click', function() {
+                viewModal.style.display = 'flex';
+            });
+            
+            prefMenu.addEventListener('click', function() {
+                prefModal.style.display = 'flex';
+            });
+            
+            historyMenu.addEventListener('click', function() {
+                historyModal.style.display = 'flex';
+                renderHistoryFileSelect();
+            });
+            
+            storageMenu.addEventListener('click', function() {
+                storageModal.style.display = 'flex';
+            });
+            
+            // 关闭模态框
+            document.querySelectorAll('.modal-close').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    this.closest('.modal').style.display = 'none';
+                });
+            });
+            
+            document.getElementById('cancelView').addEventListener('click', function() {
+                viewModal.style.display = 'none';
+            });
+            
+            document.getElementById('saveView').addEventListener('click', function() {
+                const viewMode = document.querySelector('input[name="viewMode"]:checked').value;
+                appConfig.viewMode = viewMode;
+                applyConfig();
+                saveConfig();
+                viewModal.style.display = 'none';
+            });
+            
+            document.getElementById('cancelPref').addEventListener('click', function() {
+                prefModal.style.display = 'none';
+            });
+            
+            document.getElementById('savePref').addEventListener('click', function() {
+                const theme = document.querySelector('input[name="theme"]:checked').value;
+                const fontSize = parseInt(document.getElementById('fontSize').value);
+                
+                appConfig.theme = theme;
+                appConfig.fontSize = fontSize;
+                
+                applyConfig();
+                saveConfig();
+                prefModal.style.display = 'none';
+            });
+            
+            document.getElementById('closeHistory').addEventListener('click', function() {
+                historyModal.style.display = 'none';
+            });
+            
+            document.getElementById('cancelStorage').addEventListener('click', function() {
+                storageModal.style.display = 'none';
+            });
+            
+            document.getElementById('saveStorage').addEventListener('click', function() {
+                // 本地存储设置
+                appConfig.storage.local.autoSave = document.getElementById('autoSave').checked;
+                appConfig.storage.local.saveInterval = parseInt(document.getElementById('saveInterval').value);
+                
+                // Git存储设置
+                appConfig.storage.git.repoUrl = document.getElementById('gitRepoUrl').value;
+                appConfig.storage.git.branch = document.getElementById('gitBranch').value;
+                appConfig.storage.git.token = document.getElementById('gitToken').value;
+                appConfig.storage.git.autoSync = document.getElementById('gitAutoSync').checked;
+                
+                // WebDAV存储设置
+                appConfig.storage.webdav.url = document.getElementById('webdavUrl').value;
+                appConfig.storage.webdav.user = document.getElementById('webdavUser').value;
+                appConfig.storage.webdav.pass = document.getElementById('webdavPass').value;
+                appConfig.storage.webdav.path = document.getElementById('webdavPath').value;
+                
+                saveConfig();
+                storageModal.style.display = 'none';
+                alert('存储设置已保存！');
+            });
+            
+            // 标签切换
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const tabId = this.dataset.tab;
+                    
+                    // 移除所有活动标签
+                    document.querySelectorAll('.tab').forEach(t => {
+                        t.classList.remove('active');
+                    });
+                    
+                    // 隐藏所有标签内容
+                    document.querySelectorAll('.tab-content').forEach(c => {
+                        c.classList.remove('active');
+                    });
+                    
+                    // 激活当前标签
+                    this.classList.add('active');
+                    document.getElementById(tabId + 'Tab').classList.add('active');
+                });
+            });
+            
+            // 字体大小调整
+            document.getElementById('fontSize').addEventListener('input', function() {
+                document.getElementById('fontSizeValue').textContent = this.value + 'px';
+            });
+            
+            // 导出配置
+            document.getElementById('exportConfigBtn').addEventListener('click', function() {
+                const blob = new Blob([JSON.stringify(appConfig, null, 2)], {type: 'application/json'});
+                const url = URL.createObjectURL(blob);
+                
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'md_editor_config.json';
+                document.body.appendChild(a);
+                a.click();
+                
+                // 清理
+                setTimeout(() => {
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                }, 100);
+            });
+            
+            // 导入配置
+            document.getElementById('configImport').addEventListener('change', function(e) {
+                if (e.target.files.length > 0) {
+                    const file = e.target.files[0];
+                    const reader = new FileReader();
+                    
+                    reader.onload = function(event) {
+                        try {
+                            const config = JSON.parse(event.target.result);
+                            appConfig = config;
+                            applyConfig();
+                            saveConfig();
+                            alert('配置导入成功！');
+                        } catch (error) {
+                            alert('配置文件格式错误');
+                        }
+                    };
+                    
+                    reader.readAsText(file);
+                }
+            });
+            
+            // 渲染历史文件选择
+            function renderHistoryFileSelect() {
+                const select = document.getElementById('historyFileSelect');
+                select.innerHTML = '';
+                
+                files.forEach(file => {
+                    const option = document.createElement('option');
+                    option.value = file.id;
+                    option.textContent = file.name;
+                    select.appendChild(option);
+                });
+                
+                if (files.length > 0) {
+                    select.value = currentFileId;
+                    renderHistoryList(currentFileId);
+                }
+                
+                select.addEventListener('change', function() {
+                    renderHistoryList(this.value);
+                });
+            }
+            
+            // 渲染历史版本列表
+            function renderHistoryList(fileId) {
+                const historyList = document.getElementById('historyList');
+                historyList.innerHTML = '';
+                
+                const file = files.find(f => f.id === fileId);
+                if (file && file.history.length > 0) {
+                    file.history.forEach((version, index) => {
+                        const versionItem = document.createElement('div');
+                        versionItem.className = 'repo-item';
+                        versionItem.innerHTML = `
+                            <input type="radio" name="historyVersion" id="version${index}" value="${index}">
+                            <label for="version${index}" class="repo-url">${formatDate(version.savedAt)}</label>
+                        `;
+                        historyList.appendChild(versionItem);
+                    });
+                } else {
+                    historyList.innerHTML = '<p>暂无历史版本</p>';
+                }
+            }
+            
+            // 恢复历史版本
+            document.getElementById('restoreVersion').addEventListener('click', function() {
+                const fileId = document.getElementById('historyFileSelect').value;
+                const versionIndex = document.querySelector('input[name="historyVersion"]:checked')?.value;
+                
+                if (versionIndex !== undefined) {
+                    const file = files.find(f => f.id === fileId);
+                    if (file) {
+                        const version = file.history[versionIndex];
+                        if (version) {
+                            file.content = version.content;
+                            saveFiles();
+                            
+                            if (fileId === currentFileId) {
+                                editor.value = version.content;
+                                updatePreview();
+                            }
+                            
+                            alert('版本已恢复');
+                            historyModal.style.display = 'none';
+                        }
+                    }
+                } else {
+                    alert('请选择一个历史版本');
+                }
+            });
+            
+            // 点击模态框外部关闭
+            window.addEventListener('click', function(event) {
+                if (event.target.classList.contains('modal')) {
+                    event.target.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
