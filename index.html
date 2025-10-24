@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/lib/common.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <link rel="stylesheet"
         href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.7.0/build/styles/github.min.css">
     <style>
@@ -1600,6 +1601,15 @@
             </div>
         </div>
         <script>
+            class MarkdownManager {
+                constructor() {
+                    this.init()
+
+                }
+                init() {
+
+                }
+            }
             // 初始化编辑器
             document.addEventListener('DOMContentLoaded', function () {
                 // DOM元素
@@ -1698,7 +1708,7 @@
                 initMultiGitConfig();
 
                 initStorageTabs();
-
+  let userPassword = "123"
                 // 保存存储设置时记住当前tab
                 function saveStorageSettings() {
                     const activeTab = document.querySelector('.tab.active').dataset.tab;
@@ -2462,7 +2472,24 @@ function helloWorld() {
                         }
                     }
                 }
+                let masterKey = deriveKey(userPassword);
+                // 派生密钥
+                function deriveKey(password) {
+                    // 在实际应用中应使用更安全的密钥派生算法如PBKDF2
+                    // 这里简化处理，实际应用中应使用CryptoJS.PBKDF2
+                    return CryptoJS.SHA256(password).toString();
+                }
 
+                // 加密数据
+                function encryptData(data) {
+                    return CryptoJS.AES.encrypt(data, masterKey).toString();
+                }
+
+                // 解密数据
+                function decryptData(ciphertext) {
+                    const bytes = CryptoJS.AES.decrypt(ciphertext, masterKey);
+                    return bytes.toString(CryptoJS.enc.Utf8);
+                }
                 // 保存所有文件到localStorage
                 function saveFiles() {
                     const files = JSON.parse(localStorage.getItem('mdEditorFiles') || '[]');
@@ -2473,17 +2500,16 @@ function helloWorld() {
                         const encryptionKey = deriveKeyFromPassword(userPassword);
                         const jsonData = JSON.stringify(files);
 
-                        encryptContent(jsonData, encryptionKey)
-                            .then(encryptedData => {
-                                localStorage.setItem('encryptedFiles', encryptedData);
-                                // 清除未加密的数据
-                                localStorage.removeItem('mdEditorFiles');
-                            })
-                            .catch(error => {
-                                console.error('加密失败:', error);
-                                // 加密失败时使用未加密存储
-                                localStorage.setItem('mdEditorFiles', JSON.stringify(files));
-                            });
+                        try {
+                            localStorage.setItem('encryptedFiles', encryptData(jsonData));
+                            // 清除未加密的数据
+                            localStorage.removeItem('mdEditorFiles');
+
+                        } catch {
+                            console.error('加密失败:', error);
+                            // 加密失败时使用未加密存储
+                            localStorage.setItem('mdEditorFiles', JSON.stringify(files));
+                        }
                     } else {
                         // 没有设置密码，正常存储
                         localStorage.setItem('mdEditorFiles', JSON.stringify(files));
@@ -2496,13 +2522,7 @@ function helloWorld() {
 
                     if (encryptedData && password) {
                         // 尝试解密数据
-                        const encryptionKey = deriveKeyFromPassword(password);
-                        return decryptContent(encryptedData, encryptionKey)
-                            .then(decryptedData => JSON.parse(decryptedData))
-                            .catch(error => {
-                                console.error('解密失败:', error);
-                                return [];
-                            });
+                        return decryptData(encryptedData)
                     }
 
                     // 没有加密数据或没有密码，加载未加密数据
@@ -3872,7 +3892,7 @@ function helloWorld() {
                     setDefaultImageHost(service);
                     alert(`已将${service}设置为默认图床`);
                 });
-
+              
                 // 修改登录处理逻辑
                 // document.getElementById('loginForm').addEventListener('submit', function (e) {
                 //     console.log("fedgdfgdfgdfd");
@@ -4035,6 +4055,7 @@ function helloWorld() {
                                 // 更新状态显示错误
                                 syncStatus.innerHTML = `<i class="fas fa-exclamation-circle"></i> <span>${repo.name} 同步失败: ${error.message}</span>`;
                                 syncStatus.classList.add('error');
+                                console.log(`${error.message}`);
 
                                 // 等待1秒再继续下一个仓库
                                 await new Promise(resolve => setTimeout(resolve, 1000));
@@ -4054,18 +4075,18 @@ function helloWorld() {
                         syncStatus.classList.add('error');
                     }
                 }
-                let userPassword = "123"
+
                 // 同步JSON数据到仓库
                 async function syncJsonToRepository(jsonData, repoConfig) {
                     const fileName = 'markdown_files.json';
                     let content = jsonData;
 
+                    console.log("------1" + repoConfig.type);
                     // 如果仓库配置了加密，对内容进行加密
                     if (repoConfig.encrypt) {
-                        const encryptionKey = deriveKeyFromPassword(userPassword);
-                        content = await encryptContent(jsonData, encryptionKey);
+                        content = encryptData(jsonData);
                     }
-                    console.log("------" + repoConfig.type);
+                    console.log("------2" + repoConfig.type);
 
                     // 根据仓库类型选择同步方法
                     switch (repoConfig.type) {
@@ -4376,7 +4397,10 @@ function helloWorld() {
 
             });
 
-
+            // 初始化管理器
+            document.addEventListener('DOMContentLoaded', () => {
+                const markdownManager = new MarkdownManager();
+            });
         </script>
 </body>
 
