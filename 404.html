@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>页面未找到 - Markdown编辑器</title>
+  <style>
+    :root {
+      --primary-color: #3498db;
+      --secondary-color: #2980b9;
+      --light-gray: #f0f0f0;
+      --dark-gray: #333;
+      --error-color: #e74c3c;
+      --border-color: #ddd;
+      --header-bg: #f8f9fa;
+      --editor-bg: #ffffff;
+      --dark-bg: #1e1e1e;
+      --dark-text: #f0f0f0;
+      --dark-border: #444;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    body {
+      background-color: var(--editor-bg);
+      color: var(--dark-gray);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 20px;
+    }
+    
+    .dark-theme body {
+      background-color: var(--dark-bg);
+      color: var(--dark-text);
+    }
+    
+    .error-container {
+      max-width: 600px;
+      padding: 40px;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      background-color: white;
+    }
+    
+    .dark-theme .error-container {
+      background-color: #252526;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
+    
+    .error-code {
+      font-size: 120px;
+      font-weight: 700;
+      color: var(--error-color);
+      line-height: 1;
+      margin-bottom: 20px;
+    }
+    
+    .error-title {
+      font-size: 32px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      color: var(--dark-gray);
+    }
+    
+    .dark-theme .error-title {
+      color: var(--dark-text);
+    }
+    
+    .error-message {
+      font-size: 18px;
+      margin-bottom: 30px;
+      color: #666;
+      line-height: 1.6;
+    }
+    
+    .dark-theme .error-message {
+      color: #aaa;
+    }
+    
+    .action-buttons {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    
+    .btn {
+      padding: 12px 24px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 16px;
+      transition: all 0.3s;
+      cursor: pointer;
+      border: none;
+    }
+    
+    .btn-primary {
+      background-color: var(--primary-color);
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background-color: var(--secondary-color);
+    }
+    
+    .btn-secondary {
+      background-color: var(--light-gray);
+      color: var(--dark-gray);
+    }
+    
+    .dark-theme .btn-secondary {
+      background-color: #333;
+      color: var(--dark-text);
+    }
+    
+    .btn-secondary:hover {
+      background-color: #e0e0e0;
+    }
+    
+    .dark-theme .btn-secondary:hover {
+      background-color: #444;
+    }
+    
+    .search-box {
+      margin-top: 30px;
+      width: 100%;
+      max-width: 500px;
+    }
+    
+    .search-input {
+      width: 100%;
+      padding: 12px 15px;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      font-size: 16px;
+    }
+    
+    .dark-theme .search-input {
+      background-color: #333;
+      border-color: var(--dark-border);
+      color: var(--dark-text);
+    }
+    
+    .theme-toggle {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: none;
+      border: none;
+      color: var(--dark-gray);
+      cursor: pointer;
+      font-size: 24px;
+    }
+    
+    .dark-theme .theme-toggle {
+      color: var(--dark-text);
+    }
+    
+    @media (max-width: 600px) {
+      .error-code {
+        font-size: 80px;
+      }
+      
+      .error-title {
+        font-size: 24px;
+      }
+      
+      .error-message {
+        font-size: 16px;
+      }
+      
+      .action-buttons {
+        flex-direction: column;
+      }
+      
+      .btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <button class="theme-toggle" id="themeToggle">
+    <i class="fas fa-moon"></i>
+  </button>
+  
+  <div class="error-container">
+    <div class="error-code">404</div>
+    <h1 class="error-title">页面未找到</h1>
+    <p class="error-message">
+      抱歉，您访问的页面不存在或已被移除。<br>
+      请检查URL是否正确，或返回主页继续使用Markdown编辑器。
+    </p>
+    
+    <div class="action-buttons">
+      <a href="https://ma.newban.cn/" class="btn btn-primary">返回首页</a>
+      <a href="javascript:history.back()" class="btn btn-secondary">返回上一页</a>
+    </div>
+    
+    <div class="search-box">
+      <input type="text" class="search-input" placeholder="搜索内容...">
+    </div>
+  </div>
+  
+  <script>
+    // 主题切换功能
+    document.getElementById('themeToggle').addEventListener('click', function() {
+      document.body.classList.toggle('dark-theme');
+      
+      // 更新图标
+      const icon = this.querySelector('i');
+      if (document.body.classList.contains('dark-theme')) {
+        icon.classList.remove('fa-moon');
+        icon.classList.add('fa-sun');
+      } else {
+        icon.classList.remove('fa-sun');
+        icon.classList.add('fa-moon');
+      }
+    });
+    
+    // 搜索功能
+    document.querySelector('.search-input').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        const query = this.value.trim();
+        if (query) {
+          // 在实际应用中，这里应该调用搜索API
+          alert(`搜索: ${query}`);
+        }
+      }
+    });
+  </script>
+  
+  <!-- Font Awesome 图标 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+</body>
+</html>
