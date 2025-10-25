@@ -3,6 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="referrer" content="never">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Markdown编辑器</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -565,7 +566,7 @@
         }
 
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
         .form-label {
@@ -1198,15 +1199,14 @@
                     <div class="form-group">
                         <label class="form-label">模板内容</label>
                         <textarea class="form-textarea" id="templateContent" placeholder="输入模板内容..."></textarea>
-                        <p class="form-hint">支持变量：{{date}} - 当前日期, {{time}} - 当前时间</p>
-                        <p class="form-hint">支持变量：
-                            {{date}} - 当前日期
-                            {{time}} - 当前时间
-                            {{datetime}} - 当前日期和时间
-                            {{filename}} - 文档名称
-                            {{year}} - 年
-                            {{month}} - 月
-                            {{day}} - 日
+                        <p class="form-hint">支持变量：<br />
+                            {{date}} - 当前日期<br />
+                            {{time}} - 当前时间<br />
+                            {{datetime}} - 当前日期和时间<br />
+                            {{filename}} - 文档名称<br />
+                            {{year}} - 年<br />
+                            {{month}} - 月<br />
+                            {{day}} - 日<br />
                         </p>
                     </div>
                 </div>
@@ -1227,22 +1227,58 @@
 
                     <div class="form-group" id="githubConfig">
                         <label class="form-label">GitHub配置</label>
-                        <input type="text" class="form-input" placeholder="用户名" id="githubUsername">
-                        <input type="text" class="form-input" placeholder="仓库名" id="githubRepo">
-                        <input type="text" class="form-input" placeholder="分支" value="master" id="githubBranch">
-                        <input type="text" class="form-input" placeholder="目录路径" id="githubPath">
-                        <input type="password" class="form-input" placeholder="访问令牌" id="githubToken">
-                        <input type="text" class="form-input" placeholder="自定义域名" id="githubDomain">
+                        <div class="form-group">
+                            <label class="form-label">用户名</label>
+                            <input type="text" class="form-input" placeholder="用户名" id="githubUsername">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">仓库名</label>
+                            <input type="text" class="form-input" placeholder="仓库名" id="githubRepo">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">分支</label>
+                            <input type="text" class="form-input" placeholder="分支" value="master" id="githubBranch">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">目录路径</label>
+                            <input type="text" class="form-input" placeholder="目录路径" value="img" id="githubPath">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">访问令牌</label>
+                            <input type="password" class="form-input" placeholder="访问令牌" id="githubToken">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">自定义域名</label>
+                            <input type="text" class="form-input" placeholder="https://xxxx" id="githubDomain">
+                        </div>
                     </div>
 
                     <div class="form-group" id="giteeConfig" style="display: none;">
                         <label class="form-label">Gitee配置</label>
-                        <input type="text" class="form-input" placeholder="用户名" id="giteeUsername">
-                        <input type="text" class="form-input" placeholder="仓库名" id="giteeRepo">
-                        <input type="text" class="form-input" placeholder="分支" value="master" id="giteeBranch">
-                        <input type="text" class="form-input" placeholder="目录路径" id="giteePath">
-                        <input type="password" class="form-input" placeholder="访问令牌" id="giteeToken">
-                        <input type="text" class="form-input" placeholder="自定义域名" id="giteeDomain">
+                        <div class="form-group">
+                            <label class="form-label">用户名</label>
+                            <input type="text" class="form-input" placeholder="用户名" id="giteeUsername">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">仓库名</label>
+                            <input type="text" class="form-input" placeholder="仓库名" id="giteeRepo">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">分支</label>
+                            <input type="text" class="form-input" placeholder="分支" value="master" id="giteeBranch">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">目录路径</label>
+                            <input type="text" class="form-input" placeholder="目录路径" value="img" id="giteePath">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">访问令牌</label>
+                            <input type="password" class="form-input" placeholder="访问令牌" id="giteeToken">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">自定义域名</label>
+                            <input type="text" class="form-input" placeholder="https://xxxx" id="giteeDomain">
+                        </div>
                     </div>
 
                     <div class="form-group" id="customConfig" style="display: none;">
@@ -1266,7 +1302,8 @@
         </div>
     </div>
 
-    <!-- 历史版本模态框 -->
+
+    <!-- 修改历史版本模态框结构 -->
     <div class="modal" id="historyModal">
         <div class="modal-content">
             <div class="modal-header">
@@ -1274,16 +1311,40 @@
                 <button class="modal-close">&times;</button>
             </div>
             <div class="modal-body">
-                <div class="form-group">
-                    <label class="form-label">选择文件</label>
-                    <select class="form-select" id="historyFileSelect">
-                        <!-- 文件选项将通过JS动态生成 -->
-                    </select>
+                <div class="tab-container">
+                    <div class="tab active" data-tab="local">本地历史</div>
+                    <div class="tab" data-tab="remote">远程仓库历史</div>
                 </div>
-                <div class="form-group">
-                    <label class="form-label">历史版本</label>
-                    <div id="historyList">
-                        <!-- 历史版本列表将通过JS动态生成 -->
+
+                <!-- 本地历史标签页 -->
+                <div class="tab-content active" id="localTab">
+                    <div class="form-group">
+                        <label class="form-label">选择文件</label>
+                        <select class="form-select" id="localHistoryFileSelect">
+                            <!-- 文件选项将通过JS动态生成 -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">历史版本</label>
+                        <div id="localHistoryList">
+                            <!-- 本地历史版本列表将通过JS动态生成 -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 远程仓库历史标签页 -->
+                <div class="tab-content" id="remoteTab">
+                    <div class="form-group">
+                        <label class="form-label">选择仓库</label>
+                        <select class="form-select" id="remoteHistoryRepoSelect">
+                            <!-- 仓库选项将通过JS动态生成 -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">历史版本</label>
+                        <div id="remoteHistoryList">
+                            <!-- 远程历史版本列表将通过JS动态生成 -->
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1293,7 +1354,6 @@
             </div>
         </div>
     </div>
-
     <!-- 存储设置模态框 -->
     <div class="modal" id="storageModal">
         <div class="modal-content">
@@ -1464,7 +1524,73 @@
             </button>
         </div>
     </template>
-
+    <!-- 历史版本模态框 -->
+    <div class="modal" id="historyModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">历史版本</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">选择仓库</label>
+                    <select id="historyRepoSelect" class="form-select">
+                        <!-- 仓库选项将通过JS动态生成 -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">历史版本</label>
+                    <div id="historyList" style="max-height: 300px; overflow-y: auto;">
+                        <!-- 历史版本列表将通过JS动态生成 -->
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="editor-btn secondary" id="closeHistory">关闭</button>
+            </div>
+        </div>
+    </div>
+    <!-- 提交信息模态框 -->
+    <div class="modal" id="commitModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">提交信息</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">提交信息</label>
+                    <textarea id="commitMessage" class="form-textarea" placeholder="输入提交信息..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">仓库选择</label>
+                    <select id="commitRepoSelect" class="form-select">
+                        <!-- 仓库选项将通过JS动态生成 -->
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="editor-btn secondary" id="cancelCommit">取消</button>
+                <button class="editor-btn" id="confirmCommit">提交</button>
+            </div>
+        </div>
+    </div>
+    <!-- 确认回退模态框 -->
+    <div class="modal" id="restoreConfirmModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">确认回退</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>确定要回退到此版本吗？当前未保存的更改将会丢失。</p>
+            </div>
+            <div class="modal-footer">
+                <button class="editor-btn secondary" id="cancelRestore">取消</button>
+                <button class="editor-btn" id="confirmRestore">确认回退</button>
+            </div>
+        </div>
+    </div>
     <!-- 数据导入导出模态框 -->
     <div class="modal" id="dataModal">
         <div class="modal-content">
@@ -1542,57 +1668,57 @@
                         <h4>导入预览</h4>
                         <div id="previewContent"></div>
                     </div>
+                </div>
+                <!-- 导出数据 -->
+                <div class="tab-content" id="exportTab">
+                    <div class="form-group">
+                        <label class="form-label">选择导出方式</label>
+                        <select class="form-select" id="exportType">
+                            <option value="single">导出当前文件</option>
+                            <option value="batch">批量导出所有文件</option>
+                            <option value="git">导出到Git仓库</option>
+                        </select>
+                    </div>
 
-                    <!-- 导出数据 -->
-                    <div class="tab-content" id="exportTab">
-                        <div class="form-group">
-                            <label class="form-label">选择导出方式</label>
-                            <select class="form-select" id="exportType">
-                                <option value="single">导出当前文件</option>
-                                <option value="batch">批量导出所有文件</option>
-                                <option value="git">导出到Git仓库</option>
-                            </select>
-                        </div>
+                    <div class="form-group" id="singleExportSection">
+                        <label class="form-label">文件名</label>
+                        <input type="text" class="form-input" id="exportFileName" value="document.md">
 
-                        <div class="form-group" id="singleExportSection">
-                            <label class="form-label">文件名</label>
-                            <input type="text" class="form-input" id="exportFileName" value="document.md">
+                        <label class="form-label">格式</label>
+                        <select class="form-select" id="exportFormat">
+                            <option value="md">Markdown (.md)</option>
+                            <option value="html">HTML (.html)</option>
+                            <option value="pdf">PDF (.pdf)</option>
+                        </select>
+                    </div>
 
-                            <label class="form-label">格式</label>
-                            <select class="form-select" id="exportFormat">
-                                <option value="md">Markdown (.md)</option>
-                                <option value="html">HTML (.html)</option>
-                                <option value="pdf">PDF (.pdf)</option>
-                            </select>
-                        </div>
+                    <div class="form-group" id="batchExportSection" style="display: none;">
+                        <label class="form-label">导出格式</label>
+                        <select class="form-select" id="batchExportFormat">
+                            <option value="zip">ZIP压缩包</option>
+                            <option value="json">JSON格式</option>
+                        </select>
+                    </div>
 
-                        <div class="form-group" id="batchExportSection" style="display: none;">
-                            <label class="form-label">导出格式</label>
-                            <select class="form-select" id="batchExportFormat">
-                                <option value="zip">ZIP压缩包</option>
-                                <option value="json">JSON格式</option>
-                            </select>
-                        </div>
+                    <div class="form-group" id="gitExportSection" style="display: none;">
+                        <label class="form-label">目标仓库</label>
+                        <select class="form-select" id="gitExportRepo">
+                            <option value="primary">主仓库</option>
+                            <option value="backup1">备份仓库 1</option>
+                            <option value="backup2">备份仓库 2</option>
+                        </select>
 
-                        <div class="form-group" id="gitExportSection" style="display: none;">
-                            <label class="form-label">目标仓库</label>
-                            <select class="form-select" id="gitExportRepo">
-                                <option value="primary">主仓库</option>
-                                <option value="backup1">备份仓库 1</option>
-                                <option value="backup2">备份仓库 2</option>
-                            </select>
+                        <label class="form-label">分支</label>
+                        <input type="text" class="form-input" id="gitExportBranch" placeholder="master">
 
-                            <label class="form-label">分支</label>
-                            <input type="text" class="form-input" id="gitExportBranch" placeholder="master">
+                        <label class="form-label">文件路径</label>
+                        <input type="text" class="form-input" id="gitExportPath" placeholder="path/to/file.md">
 
-                            <label class="form-label">文件路径</label>
-                            <input type="text" class="form-input" id="gitExportPath" placeholder="path/to/file.md">
-
-                            <label class="form-label">提交信息</label>
-                            <input type="text" class="form-input" id="gitExportMessage" placeholder="更新文档">
-                        </div>
+                        <label class="form-label">提交信息</label>
+                        <input type="text" class="form-input" id="gitExportMessage" placeholder="更新文档">
                     </div>
                 </div>
+
 
                 <div class="modal-footer">
                     <button class="editor-btn secondary" id="cancelData">取消</button>
@@ -1708,7 +1834,8 @@
                 initMultiGitConfig();
 
                 initStorageTabs();
-  let userPassword = "123"
+                let userPassword = "123"
+                let commitMessage = `更新文档-${new Date().toISOString()}`
                 // 保存存储设置时记住当前tab
                 function saveStorageSettings() {
                     const activeTab = document.querySelector('.tab.active').dataset.tab;
@@ -1808,6 +1935,10 @@
                         repoItem.querySelector('.gitea-url').value = config.url;
                     }
 
+                    if (config.encrypt !== undefined) {
+                        const encryptSelect = repoItem.querySelector('.encrypt-option');
+                        encryptSelect.value = config.encrypt ? 'yes' : 'no';
+                    }
                     // 添加移除按钮事件
                     repoItem.querySelectorAll('.remove-repo-btn').forEach(btn => {
                         btn.addEventListener('click', function () {
@@ -3049,9 +3180,94 @@ function helloWorld() {
 
                 // 同步按钮点击事件
                 syncBtn.addEventListener('click', function () {
-                    syncAllFilesToRepositories();
+
+                    // 显示提交信息模态框
+                    document.getElementById('commitModal').style.display = 'flex';
+
+                    // 填充仓库选项 - 默认选择所有仓库
+                    const repoSelect = document.getElementById('commitRepoSelect');
+                    repoSelect.innerHTML = '';
+
+                    const config = JSON.parse(localStorage.getItem('multiGitConfig') || '{}');
+                    if (config.repositories && config.repositories.length > 0) {
+                        // 添加"所有仓库"选项
+                        const allOption = document.createElement('option');
+                        allOption.value = 'all';
+                        allOption.textContent = '所有仓库';
+                        repoSelect.appendChild(allOption);
+
+                        // 添加单个仓库选项
+                        config.repositories.forEach((repo, index) => {
+                            const option = document.createElement('option');
+                            option.value = index;
+                            option.textContent = repo.name || `仓库 ${index + 1}`;
+                            repoSelect.appendChild(option);
+                        });
+                    } else {
+                        const option = document.createElement('option');
+                        option.textContent = '未配置仓库';
+                        repoSelect.appendChild(option);
+                    }
+
                 });
 
+
+                // 修改确认提交按钮事件
+                document.getElementById('confirmCommit').addEventListener('click', function () {
+                    commitMessage = document.getElementById('commitMessage').value || '更新文档';
+                    console.log("gdgf" + document.getElementById('commitMessage').value);
+
+                    const repoSelection = document.getElementById('commitRepoSelect').value;
+
+                    // 隐藏模态框
+                    document.getElementById('commitModal').style.display = 'none';
+
+                    // 执行同步
+                    if (repoSelection === 'all') {
+                        // 同步到所有仓库
+                        syncAllFilesToRepositories();
+                    } else {
+                        // 同步到单个仓库
+                        syncToRepository(repoSelection);
+                    }
+                });
+                // 同步到指定仓库
+                async function syncToRepository(repoIndex) {
+                    const config = JSON.parse(localStorage.getItem('multiGitConfig') || '{}');
+                    if (!config.repositories || config.repositories.length <= repoIndex) {
+                        showStatusMessage('仓库配置无效');
+                        return;
+                    }
+
+                    const repo = config.repositories[repoIndex];
+                    const fileName = 'markdown_files.json';
+
+                    try {
+                        // 获取所有文件数据
+                        const allFiles = JSON.parse(localStorage.getItem('mdEditorFiles') || '[]');
+
+                        // 创建包含所有文件的JSON对象
+                        const jsonData = {
+                            version: 1,
+                            exportedAt: new Date().toISOString(),
+                            files: allFiles
+                        };
+
+                        const jsonString = JSON.stringify(jsonData, null, 2);
+
+                        // 更新同步状态
+                        syncStatus.innerHTML = '<i class="fas fa-sync fa-spin"></i> <span>同步中...</span>';
+                        syncStatus.classList.remove('synced', 'error');
+
+                        await syncJsonToRepository(jsonString, repo);
+
+                        syncStatus.innerHTML = '<i class="fas fa-check-circle"></i> <span>同步成功</span>';
+                        syncStatus.classList.add('synced');
+                    } catch (error) {
+                        syncStatus.innerHTML = `<i class="fas fa-exclamation-circle"></i> <span>同步失败: ${error.message}</span>`;
+                        syncStatus.classList.add('error');
+                    }
+                }
                 // 视图菜单点击事件 - 循环切换视图模式
                 viewMenu.addEventListener('click', function () {
                     const modes = ['edit', 'preview', 'split'];
@@ -3097,7 +3313,9 @@ function helloWorld() {
                 // 历史版本菜单
                 historyMenu.addEventListener('click', function () {
                     historyModal.style.display = 'flex';
+                    renderRemoteHistoryRepos();
                     renderHistoryFileSelect();
+                    // 渲染仓库选择下拉菜单
                 });
 
                 // 存储设置菜单
@@ -3263,7 +3481,7 @@ function helloWorld() {
 
                 // 渲染历史文件选择
                 function renderHistoryFileSelect() {
-                    const select = document.getElementById('historyFileSelect');
+                    const select = document.getElementById('localHistoryFileSelect');
                     select.innerHTML = '';
 
                     files.forEach(file => {
@@ -3279,16 +3497,20 @@ function helloWorld() {
                     }
 
                     select.addEventListener('change', function () {
+                        console.log("改变了");
+
                         renderHistoryList(this.value);
                     });
                 }
 
                 // 渲染历史版本列表
                 function renderHistoryList(fileId) {
-                    const historyList = document.getElementById('historyList');
+                    const historyList = document.getElementById('localHistoryList');
                     historyList.innerHTML = '';
 
                     const file = files.find(f => f.id === fileId);
+                    console.log("历史数量:" + file.history);
+
                     if (file && file.history.length > 0) {
                         file.history.forEach((version, index) => {
                             const versionItem = document.createElement('div');
@@ -3303,33 +3525,400 @@ function helloWorld() {
                         historyList.innerHTML = '<p>暂无历史版本</p>';
                     }
                 }
+                // 渲染远程仓库选择下拉菜单
+                function renderRemoteHistoryRepos() {
+                    const select = document.getElementById('remoteHistoryRepoSelect');
+                    select.innerHTML = '';
+                    // console.log("------"+发过的);
 
-                // 恢复历史版本
-                document.getElementById('restoreVersion').addEventListener('click', function () {
-                    const fileId = document.getElementById('historyFileSelect').value;
-                    const versionIndex = document.querySelector('input[name="historyVersion"]:checked')?.value;
+                    // 从localStorage加载配置
+                    const config = JSON.parse(localStorage.getItem('multiGitConfig') || '{}');
 
-                    if (versionIndex !== undefined) {
-                        const file = files.find(f => f.id === fileId);
-                        if (file) {
-                            const version = file.history[versionIndex];
-                            if (version) {
-                                file.content = version.content;
-                                saveFiles();
+                    if (!config.repositories || config.repositories.length === 0) {
+                        // 没有配置仓库
+                        const option = document.createElement('option');
+                        option.value = '';
+                        option.textContent = '未配置仓库';
+                        option.disabled = true;
+                        select.appendChild(option);
+                        return;
+                    }
 
-                                if (fileId === currentFileId) {
-                                    editor.value = version.content;
-                                    updatePreview();
-                                }
+                    // 查找主仓库索引
+                    let primaryIndex = 0;
+                    if (config.primaryRepoIndex !== undefined) {
+                        primaryIndex = config.primaryRepoIndex;
+                    }
 
-                                alert('版本已恢复');
-                                historyModal.style.display = 'none';
-                            }
+                    // 添加仓库选项
+                    config.repositories.forEach((repo, index) => {
+                        const option = document.createElement('option');
+                        option.value = index;
+
+                        // 构建显示文本
+                        let displayText = repo.name || `仓库 ${index + 1}`;
+
+                        // 如果是主仓库，添加标记
+                        if (index === primaryIndex) {
+                            displayText += ' (主仓库)';
+                            option.selected = true;
                         }
-                    } else {
-                        alert('请选择一个历史版本');
+
+                        // 添加仓库类型信息
+                        if (repo.type) {
+                            displayText += ` [${repo.type.toUpperCase()}]`;
+                        }
+
+                        option.textContent = displayText;
+                        select.appendChild(option);
+                    });
+
+                    // 加载默认仓库的历史记录
+                    loadRemoteHistoryCommits(primaryIndex);
+                }
+
+                // 仓库选择变化事件
+                document.getElementById('remoteHistoryRepoSelect').addEventListener('change', function () {
+                    const repoIndex = this.value;
+                    if (repoIndex !== '') {
+                        loadRemoteHistoryCommits(repoIndex);
                     }
                 });
+
+                // 加载远程仓库的历史提交记录
+                async function loadRemoteHistoryCommits(repoIndex) {
+                    const historyList = document.getElementById('remoteHistoryList');
+                    historyList.innerHTML = '<div class="loading">加载中...</div>';
+
+                    const config = JSON.parse(localStorage.getItem('multiGitConfig') || '{}');
+                    const repo = config.repositories[repoIndex];
+
+                    if (!repo) {
+                        historyList.innerHTML = '<div class="error">仓库配置无效</div>';
+                        return;
+                    }
+
+                    try {
+                        let commits = [];
+
+                        // 根据仓库类型调用API
+                        switch (repo.type) {
+                            case 'github':
+                                commits = await fetchGitHubCommits(repo);
+                                break;
+                            case 'gitee':
+                                commits = await fetchGiteeCommits(repo);
+                                break;
+                            case 'gitea':
+                                commits = await fetchGiteaCommits(repo);
+                                break;
+                            case 'gitlab':
+                                commits = await fetchGitLabCommits(repo);
+                                break;
+                            default:
+                                throw new Error(`不支持的仓库类型: ${repo.type}`);
+                        }
+
+                        // 渲染历史记录
+                        renderRemoteHistoryList(commits);
+                    } catch (error) {
+                        historyList.innerHTML = `<div class="error">加载失败: ${error.message}</div>`;
+                    }
+                }
+                // 修改fetchFileFromCommit函数支持不同仓库类型
+                async function fetchFileFromCommit(commitSha, repoConfig) {
+                    const fileName = 'markdown_files.json';
+
+                    try {
+                        let content = '';
+
+                        // 根据仓库类型选择不同的API调用方式
+                        switch (repoConfig.type) {
+                            case 'github':
+                                content = await fetchGitHubFileFromCommit(commitSha, fileName, repoConfig);
+                                break;
+                            case 'gitee':
+                                content = await fetchGiteeFileFromCommit(commitSha, fileName, repoConfig);
+                                break;
+                            case 'gitea':
+                                content = await fetchGiteaFileFromCommit(commitSha, fileName, repoConfig);
+                                break;
+                            case 'gitlab':
+                                content = await fetchGitLabFileFromCommit(commitSha, fileName, repoConfig);
+                                break;
+                            case 'gitcode':
+                                content = await fetchGitcodeFileFromCommit(commitSha, fileName, repoConfig);
+                                break;
+                            default:
+                                throw new Error(`不支持的仓库类型: ${repoConfig.type}`);
+                        }
+
+                        // 如果仓库配置了加密，尝试解密
+                        if (isEncryptedData(content)) {
+                            try {
+                                return decryptData(content);
+                            } catch (error) {
+                                throw new Error('解密失败，请确保使用正确的密码');
+                            }
+                        }
+
+                        return content;
+                    } catch (error) {
+                        throw new Error(`获取文件内容失败: ${error.message}`);
+                    }
+                }
+
+                // GitHub获取文件内容
+                async function fetchGitHubFileFromCommit(commitSha, fileName, repoConfig) {
+                    const apiUrl = `https://api.github.com/repos/${repoConfig.path}/contents/${fileName}?ref=${commitSha}`;
+
+                    const response = await fetch(apiUrl, {
+                        headers: {
+                            'Authorization': `token ${repoConfig.token}`,
+                            'Accept': 'application/vnd.github.v3.raw'
+                        }
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`GitHub API错误: ${response.status}`);
+                    }
+
+                    return await response.text();
+                }
+                function isEncryptedData(content) {
+                    // 加密数据通常具有特定的模式：
+                    // 1. 包含特定的加密标识
+                    // 2. 具有特定的格式（如CryptoJS的特定格式）
+                    // 3. 无法解析为JSON
+
+                    // 检查是否包含CryptoJS的特定标识
+                    if (content.includes('U2FsdGVkX1')) {
+                        return true;
+                    }
+
+                    // 检查是否是有效的JSON
+                    try {
+                        JSON.parse(content);
+                        return false; // 能解析为JSON，不是加密数据
+                    } catch (e) {
+                        // 无法解析为JSON，可能是加密数据
+                        return true;
+                    }
+                }
+                // Gitee获取文件内容
+                async function fetchGiteeFileFromCommit(commitSha, fileName, repoConfig) {
+                    const apiUrl = `https://gitee.com/api/v5/repos/${repoConfig.path}/contents/${fileName}?ref=${commitSha}`;
+
+                    const response = await fetch(apiUrl, {
+                        headers: {
+                            'Authorization': `Bearer ${repoConfig.token}`
+                        }
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`Gitee API错误: ${response.status}`);
+                    }
+
+                    const fileData = await response.json();
+                    return atob(fileData.content);
+                }
+
+                // Gitea获取文件内容
+                async function fetchGiteaFileFromCommit(commitSha, fileName, repoConfig) {
+                    const baseUrl = repoConfig.url || 'https://gitea.com';
+                    const apiUrl = `${baseUrl}/api/v1/repos/${repoConfig.path}/contents/${fileName}?ref=${commitSha}`;
+
+                    const response = await fetch(apiUrl, {
+                        headers: {
+                            'Authorization': `token ${repoConfig.token}`
+                        }
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`Gitea API错误: ${response.status}`);
+                    }
+
+                    const fileData = await response.json();
+                    return atob(fileData.content);
+                }
+
+                // GitLab获取文件内容
+                async function fetchGitLabFileFromCommit(commitSha, fileName, repoConfig) {
+                    const apiUrl = `https://gitlab.com/api/v4/projects/${encodeURIComponent(repoConfig.path)}/repository/files/${encodeURIComponent(fileName)}/raw?ref=${commitSha}`;
+
+                    const response = await fetch(apiUrl, {
+                        headers: {
+                            'PRIVATE-TOKEN': repoConfig.token
+                        }
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`GitLab API错误: ${response.status}`);
+                    }
+
+                    return await response.text();
+                }
+
+                // Gitcode获取文件内容（假设API类似GitHub）
+                async function fetchGitcodeFileFromCommit(commitSha, fileName, repoConfig) {
+                    const apiUrl = `https://gitcode.net/api/v1/repos/${repoConfig.path}/contents/${fileName}?ref=${commitSha}`;
+
+                    const response = await fetch(apiUrl, {
+                        headers: {
+                            'Authorization': `token ${repoConfig.token}`
+                        }
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`Gitcode API错误: ${response.status}`);
+                    }
+
+                    const fileData = await response.json();
+                    return atob(fileData.content);
+                }
+
+                // 渲染远程历史列表
+                function renderRemoteHistoryList(commits) {
+                    const historyList = document.getElementById('remoteHistoryList');
+                    historyList.innerHTML = '';
+
+                    if (commits.length === 0) {
+                        historyList.innerHTML = '<div class="empty-state">暂无历史版本</div>';
+                        return;
+                    }
+
+                    commits.forEach(commit => {
+                        const commitItem = document.createElement('div');
+                        commitItem.className = 'repo-item';
+                        commitItem.dataset.sha = commit.sha;
+
+                        commitItem.innerHTML = `
+      <div class="history-header">
+        <input type="radio" name="remoteHistoryVersion" id="commit_${commit.sha}">
+        <label for="commit_${commit.sha}">
+          <span class="commit-date">${commit.date}</span>
+        </label>
+      </div>
+      <div class="history-message">-${commit.message}</div>
+    `;
+
+                        historyList.appendChild(commitItem);
+                    });
+                }
+
+                // GitHub获取提交历史
+                async function fetchGitHubCommits(repoConfig) {
+                    const apiUrl = `https://api.github.com/repos/${repoConfig.path}/commits?path=markdown_files.json`;
+
+                    const response = await fetch(apiUrl, {
+                        headers: {
+                            'Authorization': `token ${repoConfig.token}`,
+                            'Accept': 'application/vnd.github.v3+json'
+                        }
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`GitHub API错误: ${response.status}`);
+                    }
+
+                    const data = await response.json();
+                    return data.map(commit => ({
+                        sha: commit.sha,
+                        message: commit.commit.message,
+                        author: commit.commit.author.name,
+                        date: new Date(commit.commit.author.date).toLocaleString()
+                    }));
+                }
+
+                // Gitee获取提交历史
+                async function fetchGiteeCommits(repoConfig) {
+                    const apiUrl = `https://gitee.com/api/v5/repos/${repoConfig.path}/commits?path=markdown_files.json`;
+
+                    const response = await fetch(apiUrl, {
+                        headers: {
+                            'Authorization': `Bearer ${repoConfig.token}`
+                        }
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`Gitee API错误: ${response.status}`);
+                    }
+
+                    const data = await response.json();
+                    return data.map(commit => ({
+                        sha: commit.sha,
+                        message: commit.commit.message,
+                        author: commit.commit.author.name,
+                        date: new Date(commit.commit.author.date).toLocaleString()
+                    }));
+                }
+
+
+
+                
+                // 恢复历史版本
+                document.getElementById('restoreVersion').addEventListener('click', function () {
+                    // 检查当前激活的标签页
+                    const activeTab = document.querySelector('#historyModal .tab.active').dataset.tab;
+
+                    if (activeTab === 'local') {
+                        // 恢复本地历史版本
+                        const selectedVersion = document.querySelector('#localHistoryList input[name="historyVersion"]:checked');
+                        if (!selectedVersion) {
+                            alert('请选择一个历史版本');
+                            return;
+                        }
+
+                        const fileId = document.getElementById('localHistoryFileSelect').value;
+                        const versionIndex = selectedVersion.closest('.history-item').dataset.index;
+
+                        restoreLocalVersion(fileId, versionIndex);
+                    } else if (activeTab === 'remote') {
+                        // 恢复远程历史版本
+                        const selectedCommit = document.querySelector('#remoteHistoryList input[name="remoteHistoryVersion"]:checked');
+                        if (!selectedCommit) {
+                            alert('请选择一个历史版本');
+                            return;
+                        }
+
+                        const commitSha = selectedCommit.closest('.history-item').dataset.sha;
+                        const repoIndex = document.getElementById('remoteHistoryRepoSelect').value;
+
+                        restoreRemoteVersion(commitSha, repoIndex);
+                    }
+                });
+                // 恢复远程历史版本
+                async function restoreRemoteVersion(commitSha, repoIndex) {
+                    const config = JSON.parse(localStorage.getItem('multiGitConfig') || '{}');
+                    const repo = config.repositories[repoIndex];
+
+                    try {
+                        // 获取该提交对应的文件内容
+                        const fileContent = await fetchFileFromCommit(commitSha, repo);
+
+                        // 解析文件内容
+                        const jsonData = JSON.parse(fileContent);
+
+                        if (!jsonData.files || !Array.isArray(jsonData.files)) {
+                            throw new Error('无效的历史数据格式');
+                        }
+
+                        // 更新本地文件系统
+                        files = jsonData.files;
+                        saveFiles();
+
+                        // 刷新界面
+                        renderFileList();
+                        if (files.length > 0) {
+                            openFile(files[0].id);
+                        }
+
+                        alert('版本恢复成功');
+                        document.getElementById('historyModal').style.display = 'none';
+                    } catch (error) {
+                        alert(`恢复失败: ${error.message}`);
+                    }
+                }
                 // 导出配置
                 document.getElementById('exportConfigBtn').addEventListener('click', function () {
                     const blob = new Blob([JSON.stringify(appConfig, null, 2)], { type: 'application/json' });
@@ -3892,7 +4481,7 @@ function helloWorld() {
                     setDefaultImageHost(service);
                     alert(`已将${service}设置为默认图床`);
                 });
-              
+
                 // 修改登录处理逻辑
                 // document.getElementById('loginForm').addEventListener('submit', function (e) {
                 //     console.log("fedgdfgdfgdfd");
@@ -4086,7 +4675,7 @@ function helloWorld() {
                     if (repoConfig.encrypt) {
                         content = encryptData(jsonData);
                     }
-                    console.log("------2" + repoConfig.type);
+                    console.log("------2" + repoConfig.encrypt);
 
                     // 根据仓库类型选择同步方法
                     switch (repoConfig.type) {
@@ -4130,7 +4719,7 @@ function helloWorld() {
                             'Content-Type': 'application/json'
                         },
                         body: JSON.stringify({
-                            message: `更新文件: ${fileName}`,
+                            message: commitMessage,
                             content: btoa(unescape(encodeURIComponent(content))),
                             sha: sha,
                             branch: config.branch || 'master'
@@ -4169,7 +4758,7 @@ function helloWorld() {
                             content: btoa(unescape(encodeURIComponent(content))),
                             sha: sha,
                             branch: config.branch || 'master',
-                            message: `更新文件: ${fileName}`
+                            message: commitMessage
                         })
                     });
 
@@ -4207,7 +4796,7 @@ function helloWorld() {
                         },
                         body: JSON.stringify({
                             branch: config.branch || 'master',
-                            commit_message: `更新文件: ${fileName}`,
+                            commit_message: commitMessage,
                             content: btoa(unescape(encodeURIComponent(content))),
                             encoding: 'base64',
                             sha: sha
@@ -4249,7 +4838,7 @@ function helloWorld() {
                         },
                         body: JSON.stringify({
                             branch: config.branch || 'master',
-                            message: `更新文件: ${fileName}`,
+                            message: commitMessage,
                             content: btoa(unescape(encodeURIComponent(content))),
                             sha: sha
                         })
@@ -4288,7 +4877,7 @@ function helloWorld() {
                             'Content-Type': 'application/json'
                         },
                         body: JSON.stringify({
-                            message: `更新文件: ${fileName}`,
+                            message: commitMessage,
                             content: btoa(unescape(encodeURIComponent(content))),
                             sha: sha,
                             branch: config.branch || 'master'
