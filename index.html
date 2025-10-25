@@ -7,11 +7,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Markdown编辑器</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/lib/common.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
-    <link rel="stylesheet"
-        href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.7.0/build/styles/github.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/4.0.0/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/github.min.css">
     <style>
         :root {
             --primary-color: #3498db;
@@ -43,6 +42,9 @@
             background-color: #f5f7fa;
             overflow: hidden;
             color: #333;
+
+
+
         }
 
         body.dark-theme {
@@ -1147,15 +1149,91 @@
         .dark-theme .folder-add-dialog .file-option {
             border-bottom-color: #444;
         }
+        /* 移动端优化 */
+    @media (max-width: 480px) {
+      .login-container {
+        padding: 25px 20px;
+        max-width: 100%;
+      }
+      
+      .login-logo i {
+        font-size: 42px;
+      }
+      
+      .login-title {
+        font-size: 20px;
+      }
+      
+      .login-subtitle {
+        font-size: 13px;
+        margin-bottom: 20px;
+      }
+      
+      .form-input {
+        padding: 10px;
+        font-size: 14px;
+      }
+      
+      .login-btn {
+        padding: 10px;
+        font-size: 15px;
+      }
+      
+      .theme-toggle {
+        top: 10px;
+        right: 10px;
+        font-size: 20px;
+      }
+    }
+    
+    @media (max-width: 350px) {
+      .login-container {
+        padding: 20px 15px;
+      }
+      
+      .login-logo i {
+        font-size: 36px;
+      }
+      
+      .login-title {
+        font-size: 18px;
+      }
+      
+      .login-subtitle {
+        font-size: 12px;
+      }
+    }
     </style>
 </head>
 
 <body>
+    <div id="login-container"
+        style=" margin: auto;   width: 100%; max-width: 400px; padding: 40px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); background-color: white; text-align: center;">
+        <div class="login-logo" style="margin-bottom: 30px;">
+            <i class="fas fa-lock" style="font-size: 64px; color: var(--primary-color);"></i>
+        </div>
 
+        <h2 class="login-title"
+            style="font-size: 24px; font-weight: 600; margin-bottom: 10px; color: var(--dark-gray);">保险箱登录</h2>
+        <p class="login-subtitle" style="font-size: 16px; color: #666; margin-bottom: 30px;">请输入密码访问您的文档</p>
+
+        <div class="form-group" style="margin-bottom: 20px; text-align: left;">
+            <label class="form-label"
+                style="display: block; margin-bottom: 8px; font-weight: 500; color: var(--dark-gray);">密码</label>
+            <input type="password" id="passwordInput" class="form-input" placeholder="输入密码"
+                style="width: 100%; padding: 12px 15px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 16px;">
+        </div>
+
+        <button class="login-btn" id="loginBtn"
+            style="width: 100%; padding: 12px; background-color: var(--primary-color); color: white; border: none; border-radius: 6px; font-size: 16px; font-weight: 500; cursor: pointer; transition: background-color 0.3s;">登录</button>
+
+        <div class="login-error" id="loginError"
+            style="color: var(--error-color); margin-top: 15px; font-size: 14px; display: none;">密码错误，请重试</div>
+    </div>
 
 
     <!-- 顶部菜单栏 -->
-    <header class="header">
+    <header class="header" id="header" style="display: none;">
         <div class="logo">
             <i class="fas fa-file-alt" id="logo"></i>
             <h1>Markdown</h1>
@@ -1185,7 +1263,7 @@
     </header>
 
     <!-- 主内容区域 -->
-    <div class="main-container">
+    <div class="main-container" id="main-container" style="display: none;">
         <!-- 左侧文件列表 -->
         <div class="sidebar" id="sidebar">
             <div class="sidebar-header">
@@ -1212,7 +1290,7 @@
         </div>
 
         <!-- 编辑区域 -->
-        <div class="editor-container">
+        <div class="editor-container" id="editor-container" style="display: none;">
             <div class="editor-header">
                 <div class="editor-title" id="editorTitle">未命名.md</div>
                 <div class="editor-actions">
@@ -1238,13 +1316,15 @@
     </div>
 
     <!-- 状态栏 -->
-    <div class="status-bar">
+    <div class="status-bar" id="status-bar" style="display: none;">
         <div class="word-count">字数: <span id="wordCount">0</span></div>
         <div id="storageStatus">存储方式: <span id="storageType">本地存储</span></div>
         <div class="sync-status" id="syncStatus">
             <i class="fas fa-circle"></i> <span>未同步</span>
         </div>
     </div>
+
+
     <!-- 视图设置模态框 -->
     <div class="modal" id="viewModal">
         <div class="modal-content">
@@ -2971,8 +3051,8 @@ function helloWorld() {
                     if (file) {
                         // 添加到历史记录
                         if (file.content !== content) {
-                              // 确保history数组存在
-                              if (!file.history) {
+                            // 确保history数组存在
+                            if (!file.history) {
                                 file.history = [];
                             }
 
@@ -3006,7 +3086,6 @@ function helloWorld() {
                         }
                     }
                 }
-                let masterKey = deriveKey(userPassword);
                 // 派生密钥
                 function deriveKey(password) {
                     // 在实际应用中应使用更安全的密钥派生算法如PBKDF2
@@ -3016,12 +3095,12 @@ function helloWorld() {
 
                 // 加密数据
                 function encryptData(data) {
-                    return CryptoJS.AES.encrypt(data, masterKey).toString();
+                    return CryptoJS.AES.encrypt(data, deriveKey(userPassword)).toString();
                 }
 
                 // 解密数据
                 function decryptData(ciphertext) {
-                    const bytes = CryptoJS.AES.decrypt(ciphertext, masterKey);
+                    const bytes = CryptoJS.AES.decrypt(ciphertext, deriveKey(userPassword));
                     return bytes.toString(CryptoJS.enc.Utf8);
                 }
                 // 保存所有文件到localStorage
@@ -3932,12 +4011,14 @@ function helloWorld() {
                     try {
                         // 获取所有文件数据
                         const allFiles = JSON.parse(localStorage.getItem('mdEditorFiles') || '[]');
+                        const allFolders = JSON.parse(localStorage.getItem('mdEditorFolders') || '[]');
 
                         // 创建包含所有文件的JSON对象
                         const jsonData = {
                             version: 1,
                             exportedAt: new Date().toISOString(),
-                            files: allFiles
+                            files: allFiles,
+                            folders: allFolders,
                         };
 
                         const jsonString = JSON.stringify(jsonData, null, 2);
@@ -4001,8 +4082,8 @@ function helloWorld() {
                 historyMenu.addEventListener('click', function () {
                     historyModal.style.display = 'flex';
                     renderRemoteHistoryRepos();
-                    renderHistoryFileSelect();
                     // 渲染仓库选择下拉菜单
+                    renderHistoryFileSelect();
                 });
 
                 // 存储设置菜单
@@ -4200,12 +4281,17 @@ function helloWorld() {
                     historyList.innerHTML = '';
 
                     const file = files.find(f => f.id === fileId);
+                    // 确保history数组存在
+                    if (!file.history) {
+                        file.history = [];
+                    }
                     console.log("历史数量:" + file.history);
 
                     if (file && file.history.length > 0) {
                         file.history.forEach((version, index) => {
                             const versionItem = document.createElement('div');
                             versionItem.className = 'repo-item';
+                            versionItem.dataset.index = index
                             versionItem.innerHTML = `
                             <input type="radio" name="historyVersion" id="version${index}" value="${index}">
                             <label for="version${index}" class="repo-url">${formatDate(version.savedAt)}</label>
@@ -4346,6 +4432,8 @@ function helloWorld() {
 
                         // 如果仓库配置了加密，尝试解密
                         if (isEncryptedData(content)) {
+                            console.log("解密:" + userPassword);
+
                             try {
                                 return decryptData(content);
                             } catch (error) {
@@ -4562,6 +4650,7 @@ function helloWorld() {
 
                         const fileId = document.getElementById('localHistoryFileSelect').value;
                         const versionIndex = selectedVersion.closest('.repo-item').dataset.index;
+                        console.log("-----" + versionIndex);
 
                         restoreLocalVersion(fileId, versionIndex);
                     } else if (activeTab === 'remote') {
@@ -4578,6 +4667,48 @@ function helloWorld() {
                         restoreRemoteVersion(commitSha, repoIndex);
                     }
                 });
+
+                // 恢复本地历史版本
+                function restoreLocalVersion(fileId, versionIndex) {
+                    // 查找文件
+                    const fileIndex = files.findIndex(f => f.id === fileId);
+                    if (fileIndex === -1) {
+                        showStatusMessage('文件不存在', 'error');
+                        return;
+                    }
+
+                    const file = files[fileIndex];
+
+                    // 验证版本索引
+                    if (!file.history || versionIndex < 0 || versionIndex >= file.history.length) {
+                        showStatusMessage('无效的历史版本', 'error');
+                        return;
+                    }
+
+                    try {
+                        // 获取历史版本内容
+                        console.log("JSON.stringify(file.history[versionIndex])-----" + versionIndex);
+                        const versionContent = file.history[versionIndex].content;
+
+                        // 更新文件内容
+                        file.content = versionContent;
+                        file.updatedAt = new Date();
+
+                        // 保存文件
+                        saveFiles();
+
+                        // 如果当前打开的是这个文件，更新编辑器内容
+                        if (currentFileId === fileId) {
+                            editor.value = versionContent;
+                            updatePreview();
+                        }
+
+                        showStatusMessage('版本恢复成功');
+                    } catch (error) {
+                        console.error('恢复失败:', error);
+                        showStatusMessage(`恢复失败: ${error.message}`, 'error');
+                    }
+                }
                 // 恢复远程历史版本
                 async function restoreRemoteVersion(commitSha, repoIndex) {
                     const config = JSON.parse(localStorage.getItem('multiGitConfig') || '{}');
@@ -4596,6 +4727,7 @@ function helloWorld() {
 
                         // 更新本地文件系统
                         files = jsonData.files;
+                        folders = jsonData.folders || [];
                         saveFiles();
 
                         // 刷新界面
@@ -4607,6 +4739,8 @@ function helloWorld() {
                         alert('版本恢复成功');
                         document.getElementById('historyModal').style.display = 'none';
                     } catch (error) {
+                        console.log(error);
+
                         alert(`恢复失败: ${error.message}`);
                     }
                 }
@@ -4640,7 +4774,7 @@ function helloWorld() {
                             const config = JSON.parse(event.target.result);
 
                             // 验证配置格式
-                            if (!config.files || !config.folders || !config.appConfig) {
+                            if (!config.appConfig) {
                                 throw new Error('无效的配置文件格式');
                             }
 
@@ -4651,7 +4785,7 @@ function helloWorld() {
                             localStorage.setItem('mdEditorTemplates', JSON.stringify(config.templates));
 
                             // 重新初始化应用
-                            initApplication();
+                            // initApplication();
                             showStatusMessage('配置导入成功');
                         } catch (error) {
                             showStatusMessage(`导入失败: ${error.message}`, 'error');
@@ -5646,6 +5780,8 @@ function helloWorld() {
         </div>
       </div>
     `;
+                        console.log(`${folder.files[0]}` + folder.files.length);
+
 
                         fileList.appendChild(folderItem);
 
@@ -5907,7 +6043,45 @@ function helloWorld() {
                         renderFileList();
                     }
                 }
+                // 登录按钮事件
+                document.getElementById('loginBtn').addEventListener('click', function () {
+                    const password = document.getElementById('passwordInput').value;
 
+                    if (password) {
+                        // 设置用户密码
+                        userPassword = password;
+
+                        // 隐藏登录界面
+                        document.getElementById('login-container').style.display = 'none';
+
+                        // 显示主编辑器界面
+                        document.getElementById('header').style.display = 'flex';
+                        document.getElementById('editor-container').style.display = 'flex';
+                        document.getElementById('main-container').style.display = 'flex';
+                        document.getElementById('status-bar').style.display = 'flex';
+                    } else {
+                        showLoginError('请输入密码');
+                    }
+
+                    // 显示登录错误
+                    function showLoginError(message) {
+                        const errorElement = document.getElementById('loginError');
+                        errorElement.textContent = message;
+                        errorElement.style.display = 'block';
+
+                        // 3秒后隐藏错误信息
+                        setTimeout(() => {
+                            errorElement.style.display = 'none';
+                        }, 3000);
+                    }
+                });
+
+                // 按回车键登录
+                document.getElementById('passwordInput').addEventListener('keypress', function (e) {
+                    if (e.key === 'Enter') {
+                        document.getElementById('loginBtn').click();
+                    }
+                });
             });
 
             // 初始化管理器
