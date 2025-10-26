@@ -1149,60 +1149,109 @@
         .dark-theme .folder-add-dialog .file-option {
             border-bottom-color: #444;
         }
+
         /* 移动端优化 */
-    @media (max-width: 480px) {
-      .login-container {
-        padding: 25px 20px;
-        max-width: 100%;
-      }
-      
-      .login-logo i {
-        font-size: 42px;
-      }
-      
-      .login-title {
-        font-size: 20px;
-      }
-      
-      .login-subtitle {
-        font-size: 13px;
-        margin-bottom: 20px;
-      }
-      
-      .form-input {
-        padding: 10px;
-        font-size: 14px;
-      }
-      
-      .login-btn {
-        padding: 10px;
-        font-size: 15px;
-      }
-      
-      .theme-toggle {
-        top: 10px;
-        right: 10px;
-        font-size: 20px;
-      }
-    }
-    
-    @media (max-width: 350px) {
-      .login-container {
-        padding: 20px 15px;
-      }
-      
-      .login-logo i {
-        font-size: 36px;
-      }
-      
-      .login-title {
-        font-size: 18px;
-      }
-      
-      .login-subtitle {
-        font-size: 12px;
-      }
-    }
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 25px 20px;
+                max-width: 100%;
+            }
+
+            .login-logo i {
+                font-size: 42px;
+            }
+
+            .login-title {
+                font-size: 20px;
+            }
+
+            .login-subtitle {
+                font-size: 13px;
+                margin-bottom: 20px;
+            }
+
+            .form-input {
+                padding: 10px;
+                font-size: 14px;
+            }
+
+            .login-btn {
+                padding: 10px;
+                font-size: 15px;
+            }
+
+            .theme-toggle {
+                top: 10px;
+                right: 10px;
+                font-size: 20px;
+            }
+        }
+
+        @media (max-width: 350px) {
+            .login-container {
+                padding: 20px 15px;
+            }
+
+            .login-logo i {
+                font-size: 36px;
+            }
+
+            .login-title {
+                font-size: 18px;
+            }
+
+            .login-subtitle {
+                font-size: 12px;
+            }
+        }
+
+        /* 图床配置样式 */
+        .image-host-item {
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 15px;
+            position: relative;
+            background-color: var(--editor-bg);
+        }
+
+        .dark-theme .image-host-item {
+            background-color: #333;
+        }
+
+
+        .default-image-host-select {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .default-image-host-select label {
+            font-weight: 500;
+            color: var(--primary-color);
+        }
+
+
+        .dark-theme .image-host-type {
+            background-color: #333;
+        }
+
+        .github-config,
+        .gitee-config,
+        .custom-config {
+            margin-top: 15px;
+        }
+
+        /* 响应式优化 */
+        @media (max-width: 768px) {
+            .image-host-item {
+                padding: 10px;
+            }
+
+            .form-group {
+                margin-bottom: 10px;
+            }
+        }
     </style>
 </head>
 
@@ -1605,88 +1654,135 @@
                 </div>
 
                 <!-- 图床设置内容 -->
+                <!-- 图床设置内容 -->
                 <div class="tab-content" id="imageHostTab">
                     <div class="form-group">
-                        <label class="form-label">选择图床服务</label>
-                        <select class="form-select" id="imageHostService">
-                            <option value="github">GitHub</option>
-                            <option value="gitee">Gitee</option>
-                            <option value="custom">自定义</option>
-                        </select>
-                        <button class="editor-btn secondary" id="setDefaultImageHostBtn" style="margin-top: 10px;">
-                            <i class="fas fa-star"></i> 设为默认图床
+                        <label class="form-label">图床配置</label>
+                        <div class="image-host-list" id="imageHostList">
+                            <!-- 图床配置项将通过JS动态生成 -->
+                        </div>
+                        <button class="editor-btn secondary" id="addImageHostBtn" style="margin-top: 10px;">
+                            <i class="fas fa-plus"></i> 添加图床
                         </button>
-                    </div>
-
-                    <div class="form-group" id="githubConfig">
-                        <label class="form-label">GitHub配置</label>
-                        <div class="form-group">
-                            <label class="form-label">用户名</label>
-                            <input type="text" class="form-input" placeholder="用户名" id="githubUsername">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">仓库名</label>
-                            <input type="text" class="form-input" placeholder="仓库名" id="githubRepo">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">分支</label>
-                            <input type="text" class="form-input" placeholder="分支" value="master" id="githubBranch">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">目录路径</label>
-                            <input type="text" class="form-input" placeholder="目录路径" value="img" id="githubPath">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">访问令牌</label>
-                            <input type="password" class="form-input" placeholder="访问令牌" id="githubToken">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">自定义域名</label>
-                            <input type="text" class="form-input" placeholder="https://xxxx" id="githubDomain">
-                        </div>
-                    </div>
-
-                    <div class="form-group" id="giteeConfig" style="display: none;">
-                        <label class="form-label">Gitee配置</label>
-                        <div class="form-group">
-                            <label class="form-label">用户名</label>
-                            <input type="text" class="form-input" placeholder="用户名" id="giteeUsername">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">仓库名</label>
-                            <input type="text" class="form-input" placeholder="仓库名" id="giteeRepo">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">分支</label>
-                            <input type="text" class="form-input" placeholder="分支" value="master" id="giteeBranch">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">目录路径</label>
-                            <input type="text" class="form-input" placeholder="目录路径" value="img" id="giteePath">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">访问令牌</label>
-                            <input type="password" class="form-input" placeholder="访问令牌" id="giteeToken">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">自定义域名</label>
-                            <input type="text" class="form-input" placeholder="https://xxxx" id="giteeDomain">
-                        </div>
-                    </div>
-
-                    <div class="form-group" id="customConfig" style="display: none;">
-                        <label class="form-label">自定义图床配置</label>
-                        <input type="text" class="form-input" placeholder="API地址" id="customApiUrl">
-                        <input type="text" class="form-input" placeholder="上传路径" id="customUploadPath">
-                        <input type="password" class="form-input" placeholder="API密钥" id="customApiKey">
-                        <input type="text" class="form-input" placeholder="自定义域名" id="customDomain">
-                    </div>
-
-                    <div class="form-group">
-                        <button class="editor-btn" id="testImageHostBtn">测试连接</button>
                     </div>
                 </div>
 
+                <!-- 图床配置项模板 -->
+                <template id="imageHostItemTemplate">
+                    <div class="image-host-item"
+                        style="border: 1px solid var(--border-color); border-radius: 6px; padding: 15px; margin-bottom: 15px; position: relative; background-color: var(--editor-bg);">
+                        <button type="button" class="remove-image-host-btn"
+                            style="position: absolute; top: 10px; right: 10px; background: none; border: none; color: var(--error-color); cursor: pointer;">
+                            <i class="fas fa-times"></i>
+                        </button>
+
+                        <!-- 默认图床选择 -->
+                        <div class="default-image-host-select"
+                            style="display: flex; align-items: center; margin-bottom: 10px;">
+                            <input type="radio" name="defaultImageHost" class="default-image-host-radio"
+                                style="margin-right: 8px;">
+                            <label style="font-weight: 500; color: var(--primary-color);">默认图床</label>
+                        </div>
+                        <!-- 图床名称 -->
+                        <div class="form-group">
+                            <label class="form-label">图床名称</label>
+                            <input type="text" class="form-input image-host-name" placeholder="输入图床名称（例如：主图床）">
+                        </div>
+                        <!-- 图床类型选择 -->
+                        <div class="form-group">
+                            <label class="form-label">图床类型</label>
+                            <select class="image-host-type form-select">
+                                <option value="github">GitHub</option>
+                                <option value="gitee">Gitee</option>
+                                <option value="custom">自定义</option>
+                            </select>
+                        </div>
+
+                        <!-- GitHub配置 -->
+                        <div class="form-group github-config">
+                            <label class="form-label">GitHub配置</label>
+                            <div class="form-group">
+                                <label class="form-label">用户名</label>
+                                <input type="text" class="form-input github-username" placeholder="用户名">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">仓库名</label>
+                                <input type="text" class="form-input github-repo" placeholder="仓库名">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">分支</label>
+                                <input type="text" class="form-input github-branch" placeholder="分支" value="main">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">目录路径</label>
+                                <input type="text" class="form-input github-path" placeholder="目录路径" value="img">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">访问令牌</label>
+                                <input type="password" class="form-input github-token" placeholder="访问令牌">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">自定义域名</label>
+                                <input type="text" class="form-input github-customDomain" placeholder="https://xxxx">
+                            </div>
+                        </div>
+
+                        <!-- Gitee配置 -->
+                        <div class="form-group gitee-config" style="display: none;">
+                            <label class="form-label">Gitee配置</label>
+                            <div class="form-group">
+                                <label class="form-label">用户名</label>
+                                <input type="text" class="form-input gitee-username" placeholder="用户名">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">仓库名</label>
+                                <input type="text" class="form-input gitee-repo" placeholder="仓库名">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">分支</label>
+                                <input type="text" class="form-input gitee-branch" placeholder="分支" value="master">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">目录路径</label>
+                                <input type="text" class="form-input gitee-path" placeholder="目录路径" value="img">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">访问令牌</label>
+                                <input type="password" class="form-input gitee-token" placeholder="访问令牌">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">自定义域名</label>
+                                <input type="text" class="form-input gitee-customDomain" placeholder="https://xxxx">
+                            </div>
+                        </div>
+
+                        <!-- 自定义配置 -->
+                        <div class="form-group custom-config" style="display: none;">
+                            <label class="form-label">自定义图床配置</label>
+                            <div class="form-group">
+                                <label class="form-label">API地址</label>
+                                <input type="text" class="form-input custom-api-url" placeholder="API地址">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">上传路径</label>
+                                <input type="text" class="form-input custom-upload-path" placeholder="上传路径">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">API密钥</label>
+                                <input type="password" class="form-input custom-api-key" placeholder="API密钥">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">自定义域名</label>
+                                <input type="text" class="form-input custom-customDomain" placeholder="自定义域名">
+                            </div>
+                        </div>
+
+                        <button type="button" class="remove-image-host-btn editor-btn secondary"
+                            style="width: auto; padding: 5px 10px; background-color: var(--error-color); color: white; border: none; border-radius: 4px; cursor: pointer;">
+                            <i class="fas fa-trash"></i> 移除
+                        </button>
+                    </div>
+                </template>
             </div>
             <div class="modal-footer">
                 <button class="editor-btn secondary" id="cancelPref">取消</button>
@@ -2185,37 +2281,6 @@
                         }
                     }
                 };
-                // 图床配置数据结构
-                const imageHostConfig = {
-                    defaultService: 'github',
-                    services: {
-                        github: {
-                            username: '',
-                            repo: '',
-                            branch: 'master',
-                            path: '',
-                            token: '',
-                            customDomain: '',
-                            enabled: true
-                        },
-                        gitee: {
-                            username: '',
-                            repo: '',
-                            branch: 'master',
-                            path: '',
-                            token: '',
-                            customDomain: '',
-                            enabled: true
-                        },
-                        custom: {
-                            apiUrl: '',
-                            uploadPath: '',
-                            apiKey: '',
-                            customDomain: '',
-                            enabled: false
-                        }
-                    }
-                };
 
 
                 addImageContextMenu();
@@ -2426,26 +2491,73 @@
                 });
                 // 处理本地图片上传
                 document.getElementById('imageUpload').addEventListener('change', function (e) {
-                    const file = e.target.files[0];
-                    if (!file) return;
 
-                    // 创建预览
-                    const reader = new FileReader();
-                    reader.onload = function (event) {
-                        const preview = document.createElement('img');
-                        preview.src = event.target.result;
-                        preview.style.maxWidth = '100%';
-                        preview.style.maxHeight = '200px';
-                        preview.style.marginTop = '10px';
+                    const files = e.target.files;
+                    if (!files || files.length === 0) return;
 
-                        // 替换之前的预览
-                        const existingPreview = document.querySelector('#imageTab img');
-                        if (existingPreview) existingPreview.remove();
+                    const imageTab = document.getElementById('imageTab');
 
-                        this.parentNode.appendChild(preview);
-                    };
-                    reader.readAsDataURL(file);
+                    // 清除现有预览
+                    const previewContainer = document.getElementById('imagePreviewContainer');
+                    if (previewContainer) {
+                        previewContainer.innerHTML = '';
+                    } else {
+                        // 创建预览容器
+                        const newContainer = document.createElement('div');
+                        newContainer.id = 'imagePreviewContainer';
+                        newContainer.style.marginTop = '15px';
+                        imageTab.appendChild(newContainer);
+                    }
+
+                    // 处理所有选择的文件
+                    for (let i = 0; i < files.length; i++) {
+                        const file = files[i];
+                        if (!file.type.match('image.*')) continue; // 只处理图片文件
+
+                        const reader = new FileReader();
+
+                        reader.onload = (function (file) {
+                            return function (e) {
+                                const preview = document.createElement('div');
+                                preview.className = 'image-preview-item';
+                                preview.style.marginBottom = '15px';
+
+                                // 创建图片元素
+                                const img = document.createElement('img');
+                                img.src = e.target.result;
+                                img.style.maxWidth = '100%';
+                                img.style.maxHeight = '200px';
+                                img.style.display = 'block';
+                                img.style.borderRadius = '4px';
+
+                                // 创建文件信息
+                                const info = document.createElement('div');
+                                info.style.fontSize = '12px';
+                                info.style.color = '#666';
+                                info.style.marginTop = '5px';
+                                info.textContent = `${file.name} (${formatFileSize(file.size)})`;
+
+                                preview.appendChild(img);
+                                preview.appendChild(info);
+
+                                document.getElementById('imagePreviewContainer').appendChild(preview);
+                            };
+                        })(file);
+
+                        reader.readAsDataURL(file);
+                    }
                 });
+
+                // 格式化文件大小
+                function formatFileSize(bytes) {
+                    if (bytes === 0) return '0 Bytes';
+
+                    const k = 1024;
+                    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+                    const i = Math.floor(Math.log(bytes) / Math.log(k));
+
+                    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+                }
 
                 // 为预览图片添加右键菜单功能
                 function addImageContextMenu() {
@@ -2519,7 +2631,7 @@
                         const file = new File([blob], 'uploaded_image.png', { type: 'image/png' });
 
                         // 上传文件
-                        uploadImageToImageHost(file, '上传的图片')
+                        uploadImageToImageHost(file, '上传的图片', imageUrl)
                             .then(() => {
                                 status.textContent = '上传成功!';
                                 setTimeout(() => status.remove(), 2000);
@@ -2535,7 +2647,7 @@
                             .then(response => response.blob())
                             .then(blob => {
                                 const file = new File([blob], 'downloaded_image.png', { type: blob.type });
-                                return uploadImageToImageHost(file, '上传的图片');
+                                return uploadImageToImageHost(file, '上传的图片', imageUrl);
                             })
                             .then(() => {
                                 status.textContent = '上传成功!';
@@ -2564,39 +2676,6 @@
                     return new Blob([u8arr], { type: mime });
                 }
 
-                // 修改上传函数返回Promise
-                function uploadImageToImageHost(file, alt) {
-                    return new Promise((resolve, reject) => {
-                        // 获取图床配置
-                        const imageHostConfig = JSON.parse(localStorage.getItem('imageHostConfig') || '{}');
-
-                        // 生成图片URL
-                        const timestamp = new Date().getTime();
-                        const fileName = file.name.replace(/\.[^/.]+$/, "");
-                        const fileExtension = file.name.split('.').pop();
-
-                        // 使用自定义域名或默认URL
-                        const baseUrl = imageHostConfig.customDomain || getDefaultBaseUrl(imageHostConfig.service);
-
-                        // 构建完整URL
-                        let imageUrl = `${baseUrl}/${imageHostConfig.username}/${imageHostConfig.repo}`;
-
-                        if (imageHostConfig.path) {
-                            imageUrl += `/${imageHostConfig.path}`;
-                        }
-
-                        imageUrl += `/${fileName}_${timestamp}.${fileExtension}`;
-
-                        // 模拟上传过程
-                        setTimeout(() => {
-                            // 插入Markdown
-                            const markdown = `![${alt}](${imageUrl})`;
-                            insertAtCursor(markdown);
-
-                            resolve(imageUrl);
-                        }, 1000);
-                    });
-                }
 
 
                 // 修改插入图片功能
@@ -2712,54 +2791,8 @@
 
 
 
-                // 图床服务切换
-                document.getElementById('imageHostService').addEventListener('change', function () {
-                    document.getElementById('githubConfig').style.display = 'none';
-                    document.getElementById('giteeConfig').style.display = 'none';
-                    document.getElementById('customConfig').style.display = 'none';
 
-                    if (this.value === 'github') {
-                        document.getElementById('githubConfig').style.display = 'block';
-                    } else if (this.value === 'gitee') {
-                        document.getElementById('giteeConfig').style.display = 'block';
-                    } else if (this.value === 'custom') {
-                        document.getElementById('customConfig').style.display = 'block';
-                    }
-                });
 
-                // 测试图床连接
-                document.getElementById('testImageHostBtn').addEventListener('click', function () {
-                    const service = document.getElementById('imageHostService').value;
-                    let config = {};
-
-                    if (service === 'github') {
-                        config = {
-                            username: document.getElementById('githubUsername').value,
-                            repo: document.getElementById('githubRepo').value,
-                            branch: document.getElementById('githubBranch').value,
-                            path: document.getElementById('githubPath').value,
-                            token: document.getElementById('githubToken').value
-                        };
-                    } else if (service === 'gitee') {
-                        config = {
-                            username: document.getElementById('giteeUsername').value,
-                            repo: document.getElementById('giteeRepo').value,
-                            branch: document.getElementById('giteeBranch').value,
-                            path: document.getElementById('giteePath').value,
-                            token: document.getElementById('giteeToken').value
-                        };
-                    } else if (service === 'custom') {
-                        config = {
-                            apiUrl: document.getElementById('customApiUrl').value,
-                            uploadPath: document.getElementById('customUploadPath').value,
-                            apiKey: document.getElementById('customApiKey').value
-                        };
-                    }
-
-                    // 模拟测试连接
-                    alert(`正在测试${service}图床连接...`);
-                    // 实际实现中这里会有AJAX请求测试连接
-                });
 
 
                 // 模板管理功能
@@ -4225,6 +4258,7 @@ function helloWorld() {
                 function exportAllConfig() {
                     // 收集所有配置
                     const config = {
+                        version: 2, // 全局配置版本号
                         imageHostConfig: JSON.parse(localStorage.getItem('imageHostConfig') || '{}'),
                         multiGitConfig: JSON.parse(localStorage.getItem('multiGitConfig') || '{}'),
                         appConfig: JSON.parse(localStorage.getItem('mdEditorConfig') || '{}'),
@@ -5052,99 +5086,194 @@ function helloWorld() {
                 });
 
 
-
-                // 初始化配置
+                // 初始化图床配置
                 function initImageHostConfig() {
-                    const savedConfig = localStorage.getItem('imageHostConfig');
-                    if (savedConfig) {
-                        Object.assign(imageHostConfig, JSON.parse(savedConfig));
+                    const imageHostList = document.getElementById('imageHostList');
+                    imageHostList.innerHTML = '';
+
+                    // 从localStorage加载配置
+                    const savedConfig = JSON.parse(localStorage.getItem('imageHostConfig') || '{"hosts": []}');
+
+                    // 添加图床配置项
+                    savedConfig.hosts.forEach(host => {
+                        addImageHostItem(host);
+                    });
+
+                    // 设置默认图床
+                    if (savedConfig.defaultHostIndex !== undefined) {
+                        const defaultRadios = document.querySelectorAll('.default-image-host-radio');
+                        if (defaultRadios.length > savedConfig.defaultHostIndex) {
+                            defaultRadios[savedConfig.defaultHostIndex].checked = true;
+                        }
                     }
-                    renderImageHostConfig();
                 }
 
-                // 渲染图床配置到界面
-                function renderImageHostConfig() {
-                    // 设置默认服务
-                    document.getElementById('imageHostService').value = imageHostConfig.defaultService;
+                // 添加图床配置项
+                function addImageHostItem(config = {}) {
+                    const template = document.getElementById('imageHostItemTemplate');
+                    const clone = template.content.cloneNode(true);
+                    const hostItem = clone.querySelector('.image-host-item');
 
-                    // 渲染各个服务的配置
-                    Object.keys(imageHostConfig.services).forEach(service => {
-                        const config = imageHostConfig.services[service];
-                        if (service === 'github') {
-                            document.getElementById('githubUsername').value = config.username;
-                            document.getElementById('githubRepo').value = config.repo;
-                            document.getElementById('githubBranch').value = config.branch;
-                            document.getElementById('githubPath').value = config.path;
-                            document.getElementById('githubToken').value = config.token;
-                            document.getElementById('githubDomain').value = config.customDomain;
-                        } else if (service === 'gitee') {
-                            document.getElementById('giteeUsername').value = config.username;
-                            document.getElementById('giteeRepo').value = config.repo;
-                            document.getElementById('giteeBranch').value = config.branch;
-                            document.getElementById('giteePath').value = config.path;
-                            document.getElementById('giteeToken').value = config.token;
-                            document.getElementById('giteeDomain').value = config.customDomain;
-                        } else if (service === 'custom') {
-                            document.getElementById('customApiUrl').value = config.apiUrl;
-                            document.getElementById('customUploadPath').value = config.uploadPath;
-                            document.getElementById('customApiKey').value = config.apiKey;
-                            document.getElementById('customDomain').value = config.customDomain;
+                    // 填充数据
+                    if (config.type) {
+                        hostItem.querySelector('.image-host-type').value = config.type;
+                        // 显示/隐藏对应配置
+                        toggleImageHostConfig(hostItem, config.type);
+                    }
+                    // 填充图床名称
+                    if (config.name) {
+                        hostItem.querySelector('.image-host-name').value = config.name;
+                    }
+                    // GitHub配置
+                    if (config.github) {
+                        hostItem.querySelector('.github-username').value = config.github.username || '';
+                        hostItem.querySelector('.github-repo').value = config.github.repo || '';
+                        hostItem.querySelector('.github-branch').value = config.github.branch || 'main';
+                        hostItem.querySelector('.github-path').value = config.github.path || 'img';
+                        hostItem.querySelector('.github-token').value = config.github.token || '';
+                        hostItem.querySelector('.github-customDomain').value = config.github.customDomain || '';
+                    }
+
+                    // Gitee配置
+                    if (config.gitee) {
+                        hostItem.querySelector('.gitee-username').value = config.gitee.username || '';
+                        hostItem.querySelector('.gitee-repo').value = config.gitee.repo || '';
+                        hostItem.querySelector('.gitee-branch').value = config.gitee.branch || 'master';
+                        hostItem.querySelector('.gitee-path').value = config.gitee.path || 'img';
+                        hostItem.querySelector('.gitee-token').value = config.gitee.token || '';
+                        hostItem.querySelector('.gitee-customDomain').value = config.gitee.customDomain || '';
+                    }
+
+                    // 自定义配置
+                    if (config.custom) {
+                        hostItem.querySelector('.custom-api-url').value = config.custom.apiUrl || '';
+                        hostItem.querySelector('.custom-upload-path').value = config.custom.uploadPath || '';
+                        hostItem.querySelector('.custom-api-key').value = config.custom.apiKey || '';
+                        hostItem.querySelector('.custom-customDomain').value = config.custom.customDomain || '';
+                    }
+
+                    // 添加移除按钮事件
+                    hostItem.querySelectorAll('.remove-image-host-btn').forEach(btn => {
+                        btn.addEventListener('click', function () {
+                            hostItem.remove();
+                        });
+                    });
+
+                    // 添加图床类型变更事件
+                    hostItem.querySelector('.image-host-type').addEventListener('change', function () {
+                        toggleImageHostConfig(hostItem, this.value);
+                    });
+
+                    // 添加默认图床选择事件
+                    hostItem.querySelector('.default-image-host-radio').addEventListener('change', function () {
+                        if (this.checked) {
+                            // saveImageHostConfig();
                         }
                     });
 
-                    // 更新服务选择显示
-                    updateServiceDisplay();
+                    document.getElementById('imageHostList').appendChild(hostItem);
+                }
+
+                // 显示/隐藏图床配置
+                function toggleImageHostConfig(hostItem, type) {
+                    // 隐藏所有配置
+                    hostItem.querySelector('.github-config').style.display = 'none';
+                    hostItem.querySelector('.gitee-config').style.display = 'none';
+                    hostItem.querySelector('.custom-config').style.display = 'none';
+
+                    // 显示选中的配置
+                    switch (type) {
+                        case 'github':
+                            hostItem.querySelector('.github-config').style.display = 'block';
+                            break;
+                        case 'gitee':
+                            hostItem.querySelector('.gitee-config').style.display = 'block';
+                            break;
+                        case 'custom':
+                            hostItem.querySelector('.custom-config').style.display = 'block';
+                            break;
+                    }
                 }
 
                 // 保存图床配置
                 function saveImageHostConfig() {
-                    imageHostConfig.defaultService = document.getElementById('imageHostService').value;
-
-                    // 保存各个服务的配置
-                    imageHostConfig.services.github = {
-                        username: document.getElementById('githubUsername').value,
-                        repo: document.getElementById('githubRepo').value,
-                        branch: document.getElementById('githubBranch').value,
-                        path: document.getElementById('githubPath').value,
-                        token: document.getElementById('githubToken').value,
-                        customDomain: document.getElementById('githubDomain').value,
-                        enabled: true
+                    const config = {
+                        hosts: [],
+                        defaultHostIndex: 0
                     };
 
-                    imageHostConfig.services.gitee = {
-                        username: document.getElementById('giteeUsername').value,
-                        repo: document.getElementById('giteeRepo').value,
-                        branch: document.getElementById('giteeBranch').value,
-                        path: document.getElementById('giteePath').value,
-                        token: document.getElementById('giteeToken').value,
-                        customDomain: document.getElementById('giteeDomain').value,
-                        enabled: true
-                    };
+                    // 收集图床配置
+                    document.querySelectorAll('.image-host-item').forEach((item, index) => {
+                        const hostConfig = {
+                            name: item.querySelector('.image-host-name').value, // 获取图床名称
+                            type: item.querySelector('.image-host-type').value
+                        };
 
-                    imageHostConfig.services.custom = {
-                        apiUrl: document.getElementById('customApiUrl').value,
-                        uploadPath: document.getElementById('customUploadPath').value,
-                        apiKey: document.getElementById('customApiKey').value,
-                        customDomain: document.getElementById('customDomain').value,
-                        enabled: document.getElementById('customApiUrl').value !== ''
-                    };
+                        // 根据类型收集配置
+                        switch (hostConfig.type) {
+                            case 'github':
+                                hostConfig.github = {
+                                    username: item.querySelector('.github-username').value,
+                                    repo: item.querySelector('.github-repo').value,
+                                    branch: item.querySelector('.github-branch').value,
+                                    path: item.querySelector('.github-path').value,
+                                    token: item.querySelector('.github-token').value,
+                                    customDomain: item.querySelector('.github-customDomain').value
+                                };
+                                break;
+                            case 'gitee':
+                                hostConfig.gitee = {
+                                    username: item.querySelector('.gitee-username').value,
+                                    repo: item.querySelector('.gitee-repo').value,
+                                    branch: item.querySelector('.gitee-branch').value,
+                                    path: item.querySelector('.gitee-path').value,
+                                    token: item.querySelector('.gitee-token').value,
+                                    customDomain: item.querySelector('.gitee-customDomain').value
+                                };
+                                break;
+                            case 'custom':
+                                hostConfig.custom = {
+                                    apiUrl: item.querySelector('.custom-api-url').value,
+                                    uploadPath: item.querySelector('.custom-upload-path').value,
+                                    apiKey: item.querySelector('.custom-api-key').value,
+                                    customDomain: item.querySelector('.custom-customDomain').value
+                                };
+                                break;
+                        }
 
-                    localStorage.setItem('imageHostConfig', JSON.stringify(imageHostConfig));
-                    return imageHostConfig;
+                        // 检查是否默认图床
+                        if (item.querySelector('.default-image-host-radio').checked) {
+                            config.defaultHostIndex = index;
+                        }
+
+                        config.hosts.push(hostConfig);
+                    });
+
+                    localStorage.setItem('imageHostConfig', JSON.stringify(config));
+                    return config;
                 }
 
+                // 添加图床按钮事件
+                document.getElementById('addImageHostBtn').addEventListener('click', function () {
+                    addImageHostItem();
+                });
+
+
+
                 // 上传图片到图床
-                async function uploadImageToImageHost(file, alt) {
+                async function uploadImageToImageHost(file, alt, needRepalceImageUrl = "") {
                     const status = document.createElement('div');
                     status.textContent = '上传中...';
                     document.getElementById('imageTab').appendChild(status);
 
                     try {
-                        const config = imageHostConfig.services[imageHostConfig.defaultService];
-
-                        if (!config.enabled) {
-                            throw new Error('当前图床服务未启用');
+                        const savedConfig = JSON.parse(localStorage.getItem('imageHostConfig') || '{"hosts": []}');
+                        if (savedConfig.hosts.length < 1) {
+                            alert("请先配置图床")
+                            return
                         }
+                        const config = savedConfig.hosts[savedConfig.defaultHostIndex];
+
 
                         // 生成文件名
                         const timestamp = new Date().getTime();
@@ -5155,20 +5284,28 @@ function helloWorld() {
                         let imageUrl = '';
 
                         // 根据服务类型选择上传方式
-                        if (imageHostConfig.defaultService === 'github') {
-                            imageUrl = await uploadToGitHub(file, finalFileName, config);
-                        } else if (imageHostConfig.defaultService === 'gitee') {
-                            imageUrl = await uploadToGitee(file, finalFileName, config);
-                        } else if (imageHostConfig.defaultService === 'custom') {
-                            imageUrl = await uploadToCustom(file, finalFileName, config);
+                        if (config.type === 'github') {
+                            imageUrl = await uploadToGitHub(file, finalFileName, config.github);
+                        } else if (config.type === 'gitee') {
+                            imageUrl = await uploadToGitee(file, finalFileName, config.gitee);
+                        } else if (config.type === 'custom') {
+                            imageUrl = await uploadToCustom(file, finalFileName, config.gitee);
                         }
 
                         status.textContent = '上传成功!';
                         status.style.color = 'green';
+                        if (needRepalceImageUrl.length > 1) {
+                            //替换原先的图片链接
+                            if (window.currentContextImage) {
+                                // 替换原先的图片链接
+                                replaceImageUrl(needRepalceImageUrl, imageUrl);
+                            }
+                        } else {
+                            // 插入Markdown
+                            const markdown = `![${alt}](${imageUrl})`;
+                            insertAtCursor(markdown);
+                        }
 
-                        // 插入Markdown
-                        const markdown = `![${alt}](${imageUrl})`;
-                        insertAtCursor(markdown);
 
                         // 关闭模态框
                         setTimeout(() => {
@@ -5176,9 +5313,39 @@ function helloWorld() {
                         }, 1000);
 
                     } catch (error) {
+
                         status.textContent = `上传失败: ${error.message}`;
                         status.style.color = 'red';
+                        console.log(error);
                     }
+                }
+                // 替换图片URL
+                function replaceImageUrl(oldUrl, newUrl) {
+                    // 获取当前编辑器内容
+                    const editor = document.getElementById('editor');
+                    const content = editor.value;
+
+                    // 替换所有匹配的URL
+                    const newContent = content.replace(
+                        new RegExp(escapeRegExp(oldUrl), 'g'),
+                        newUrl
+                    );
+
+                    // 更新编辑器内容
+                    editor.value = newContent;
+
+                    // 更新预览
+                    updatePreview();
+
+                    // 保存文件
+                    if (currentFileId) {
+                        saveFile(currentFileId, editor.value);
+                    }
+                }
+
+                // 转义正则特殊字符
+                function escapeRegExp(string) {
+                    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
                 }
 
                 // 上传到GitHub
@@ -5283,56 +5450,6 @@ function helloWorld() {
                     });
                 }
 
-                // 设置默认图床
-                function setDefaultImageHost(service) {
-                    imageHostConfig.defaultService = service;
-                    localStorage.setItem('imageHostConfig', JSON.stringify(imageHostConfig));
-                    updateServiceDisplay();
-                }
-
-                // 更新服务选择显示
-                function updateServiceDisplay() {
-                    const serviceSelect = document.getElementById('imageHostService');
-                    serviceSelect.value = imageHostConfig.defaultService;
-
-                    // 显示当前默认服务
-                    const defaultIndicator = document.getElementById('defaultIndicator') ||
-                        document.createElement('span');
-                    defaultIndicator.id = 'defaultIndicator';
-                    defaultIndicator.textContent = '（默认）';
-                    defaultIndicator.style.color = 'green';
-                    defaultIndicator.style.marginLeft = '5px';
-
-                    // 移除之前的指示器
-                    document.querySelectorAll('#defaultIndicator').forEach(el => el.remove());
-
-                    // 在当前选中的服务后添加指示器
-                    const selectedOption = serviceSelect.options[serviceSelect.selectedIndex];
-                    selectedOption.textContent += '（默认）';
-                }
-
-
-                // 添加设置默认图床按钮事件
-                document.getElementById('setDefaultImageHostBtn').addEventListener('click', function () {
-                    const service = document.getElementById('imageHostService').value;
-                    setDefaultImageHost(service);
-                    alert(`已将${service}设置为默认图床`);
-                });
-
-                // 修改登录处理逻辑
-                // document.getElementById('loginForm').addEventListener('submit', function (e) {
-                //     console.log("fedgdfgdfgdfd");
-
-                //     const password = document.getElementById('password').value;
-                //     const storedPasswordHash = localStorage.getItem('passwordHash');
-
-                //     // 无论密码是否正确都进入主页
-                //     authContainer.style.display = 'none';
-                //     editorContainer.style.display = 'block';
-
-                //     // 初始化应用
-                //     initApplication(password);
-                // });
 
 
 
@@ -5494,10 +5611,10 @@ function helloWorld() {
                     } catch (error) {
                         // 文件不存在，继续创建
                     }
-
+                    
                     // 创建或更新文件
                     const response = await fetch(apiUrl, {
-                        method: 'POST',
+                        method: sha.length>0?'PUT':'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
                             access_token: config.token,
