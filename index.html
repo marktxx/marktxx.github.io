@@ -5095,7 +5095,7 @@ function helloWorld() {
                     const savedConfig = JSON.parse(localStorage.getItem('imageHostConfig') || '{"hosts": []}');
 
                     // 添加图床配置项
-                    savedConfig.hosts.forEach(host => {
+                    savedConfig?.hosts?.forEach(host => {
                         addImageHostItem(host);
                     });
 
