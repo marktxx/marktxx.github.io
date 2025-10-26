@@ -2282,25 +2282,37 @@
                     }
                 };
 
-
-                addImageContextMenu();
-                initImageHostConfig();
-
-
-
-                // 初始化多点Git存储配置
-                initMultiGitConfig();
-
-                initStorageTabs();
                 let userPassword = "123"
                 let commitMessage = `更新文档-${new Date().toISOString()}`
-
+                // 模板管理功能
+                let templates = JSON.parse(localStorage.getItem('mdEditorTemplates') || '[]');
                 // 全局变量用于管理html2pdf加载状态
                 let html2pdfLoaded = false;
                 let html2pdfLoading = false;
 
                 // 文件夹数据结构
                 let folders = JSON.parse(localStorage.getItem('mdEditorFolders') || '[]');
+
+
+
+                // 初始化应用
+                function initApplication() {
+                    initImageHostConfig();
+                    // 初始化多点Git存储配置
+                    initMultiGitConfig();
+                    initTemplates()
+                }
+
+
+                addImageContextMenu();
+                initApplication()
+                initStorageTabs();
+
+                function initTemplates() {
+                    templates = JSON.parse(localStorage.getItem('mdEditorTemplates') || '[]');
+                    renderTemplateList()
+
+                }
 
                 // 保存存储设置时记住当前tab
                 function saveStorageSettings() {
@@ -2310,6 +2322,8 @@
                     // 更新状态栏显示存储方式
                     updateStorageStatus();
                 }
+
+
 
                 // 更新状态栏显示存储方式
                 function updateStorageStatus() {
@@ -2795,8 +2809,7 @@
 
 
 
-                // 模板管理功能
-                const templates = JSON.parse(localStorage.getItem('mdEditorTemplates') || '[]');
+
 
                 // 渲染模板列表
                 function renderTemplateList() {
@@ -4819,7 +4832,7 @@ function helloWorld() {
                             localStorage.setItem('mdEditorTemplates', JSON.stringify(config.templates));
 
                             // 重新初始化应用
-                            // initApplication();
+                            initApplication();
                             showStatusMessage('配置导入成功');
                         } catch (error) {
                             showStatusMessage(`导入失败: ${error.message}`, 'error');
@@ -5611,10 +5624,10 @@ function helloWorld() {
                     } catch (error) {
                         // 文件不存在，继续创建
                     }
-                    
+
                     // 创建或更新文件
                     const response = await fetch(apiUrl, {
-                        method: sha.length>0?'PUT':'POST',
+                        method: sha.length > 0 ? 'PUT' : 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
                             access_token: config.token,
